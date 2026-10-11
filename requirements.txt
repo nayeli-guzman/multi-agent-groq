@@ -1,0 +1,7 @@
+groq>=1.0
+python-dotenv>=1.0
+pandas>=2.0
+matplotlib>=3.8
+jupyter
+# opcional: ensayos locales con Ollama
+openai>=1.40

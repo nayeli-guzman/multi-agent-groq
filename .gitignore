@@ -1,0 +1,36 @@
+# ---------- Secretos (NUNCA subir) ----------
+# .env tiene las GROQ_API_KEY reales. Solo se sube la plantilla .env.example.
+.env
+.env.*
+!.env.example
+
+# ---------- Entornos y dependencias ----------
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+node_modules/
+scripts/node_modules/
+npm-debug.log*
+
+# ---------- Cachés y temporales ----------
+.cache_llm/
+.ipynb_checkpoints/
+~$*
+*.tmp
+
+# ---------- Sistema operativo y editores ----------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ---------- Material del curso ----------
+# Enunciado entregado por los docentes: no lo republicamos.
+#Sem9_*.pdf
+
+# ---------- Opcional ----------
+# Guía interna de exposición (guion y respuestas para el jurado).
+# Quita el "#" de la línea siguiente si prefieres que no sea pública.
+# GUIA_DEFENSA.md
