@@ -18,7 +18,7 @@ Sistema multi-agente con **Groq** para planificar el reparto de una distribuidor
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env      # y pegar las GROQ_API_KEY de los integrantes
+cp .env.example .env      # y pegar las GROQ_API_KEY de los integrantes (hasta 9: GROQ_API_KEY, GROQ_API_KEY_2 … _9)
 jupyter lab LasGrills_Hackathon7_RutaBrasa.ipynb
 ```
 

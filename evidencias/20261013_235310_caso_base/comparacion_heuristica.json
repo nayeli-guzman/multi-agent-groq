@@ -1,0 +1,203 @@
+{
+  "objetivo": "puntualidad",
+  "elegida": {
+    "id": "H",
+    "nombre": "Línea base: heurística voraz sin LLM",
+    "factible": true,
+    "violaciones": [],
+    "avisos": [],
+    "costo_soles": 356.1,
+    "km": 158.5,
+    "hora_fin": "12:14",
+    "duracion_min": 284,
+    "min_fuera_de_turno": 0,
+    "a_tiempo": "19/19",
+    "pct_a_tiempo": 100.0,
+    "urgentes_a_tiempo": "6/6",
+    "pct_urgentes": 100.0,
+    "min_tarde_total": 0,
+    "tardes": [],
+    "vehiculos": [
+      {
+        "veh": "F1",
+        "tipo": "furgoneta_refrigerada",
+        "vueltas": 1,
+        "paradas": 7,
+        "kg_max": 595.0,
+        "cap": 600,
+        "sale": "07:41",
+        "regreso": "11:10"
+      },
+      {
+        "veh": "F2",
+        "tipo": "furgoneta_refrigerada",
+        "vueltas": 1,
+        "paradas": 5,
+        "kg_max": 455.0,
+        "cap": 600,
+        "sale": "08:21",
+        "regreso": "12:14"
+      },
+      {
+        "veh": "V1",
+        "tipo": "van",
+        "vueltas": 1,
+        "paradas": 5,
+        "kg_max": 230.0,
+        "cap": 400,
+        "sale": "07:57",
+        "regreso": "11:13"
+      },
+      {
+        "veh": "M1",
+        "tipo": "moto",
+        "vueltas": 1,
+        "paradas": 1,
+        "kg_max": 12.0,
+        "cap": 30,
+        "sale": "08:45",
+        "regreso": "09:18"
+      },
+      {
+        "veh": "M2",
+        "tipo": "moto",
+        "vueltas": 1,
+        "paradas": 1,
+        "kg_max": 25.0,
+        "cap": 30,
+        "sale": "08:41",
+        "regreso": "09:22"
+      }
+    ],
+    "puntaje": 100.0
+  },
+  "mejor_agentes": {
+    "id": "C",
+    "nombre": "Consolidación mínima",
+    "factible": true,
+    "violaciones": [],
+    "avisos": [],
+    "costo_soles": 432.9,
+    "km": 190.3,
+    "hora_fin": "13:57",
+    "duracion_min": 387,
+    "min_fuera_de_turno": 27,
+    "a_tiempo": "13/19",
+    "pct_a_tiempo": 68.4,
+    "urgentes_a_tiempo": "3/6",
+    "pct_urgentes": 50.0,
+    "min_tarde_total": 535,
+    "tardes": [
+      "P16 +217min",
+      "P15 +132min",
+      "P18 +75min",
+      "P19 +50min",
+      "P09 +35min",
+      "P01 +26min"
+    ],
+    "vehiculos": [
+      {
+        "veh": "F1",
+        "tipo": "furgoneta_refrigerada",
+        "vueltas": 1,
+        "paradas": 6,
+        "kg_max": 470.0,
+        "cap": 600,
+        "sale": "08:44",
+        "regreso": "11:51"
+      },
+      {
+        "veh": "F2",
+        "tipo": "furgoneta_refrigerada",
+        "vueltas": 1,
+        "paradas": 5,
+        "kg_max": 502.0,
+        "cap": 600,
+        "sale": "08:48",
+        "regreso": "13:57"
+      },
+      {
+        "veh": "V1",
+        "tipo": "van",
+        "vueltas": 1,
+        "paradas": 8,
+        "kg_max": 345.0,
+        "cap": 400,
+        "sale": "08:30",
+        "regreso": "13:10"
+      }
+    ],
+    "puntaje": 49.2
+  },
+  "heuristica": {
+    "id": "H",
+    "nombre": "Línea base: heurística voraz sin LLM",
+    "factible": true,
+    "violaciones": [],
+    "avisos": [],
+    "costo_soles": 356.1,
+    "km": 158.5,
+    "hora_fin": "12:14",
+    "duracion_min": 284,
+    "min_fuera_de_turno": 0,
+    "a_tiempo": "19/19",
+    "pct_a_tiempo": 100.0,
+    "urgentes_a_tiempo": "6/6",
+    "pct_urgentes": 100.0,
+    "min_tarde_total": 0,
+    "tardes": [],
+    "vehiculos": [
+      {
+        "veh": "F1",
+        "tipo": "furgoneta_refrigerada",
+        "vueltas": 1,
+        "paradas": 7,
+        "kg_max": 595.0,
+        "cap": 600,
+        "sale": "07:41",
+        "regreso": "11:10"
+      },
+      {
+        "veh": "F2",
+        "tipo": "furgoneta_refrigerada",
+        "vueltas": 1,
+        "paradas": 5,
+        "kg_max": 455.0,
+        "cap": 600,
+        "sale": "08:21",
+        "regreso": "12:14"
+      },
+      {
+        "veh": "V1",
+        "tipo": "van",
+        "vueltas": 1,
+        "paradas": 5,
+        "kg_max": 230.0,
+        "cap": 400,
+        "sale": "07:57",
+        "regreso": "11:13"
+      },
+      {
+        "veh": "M1",
+        "tipo": "moto",
+        "vueltas": 1,
+        "paradas": 1,
+        "kg_max": 12.0,
+        "cap": 30,
+        "sale": "08:45",
+        "regreso": "09:18"
+      },
+      {
+        "veh": "M2",
+        "tipo": "moto",
+        "vueltas": 1,
+        "paradas": 1,
+        "kg_max": 25.0,
+        "cap": 30,
+        "sale": "08:41",
+        "regreso": "09:22"
+      }
+    ],
+    "puntaje": 100.0
+  }
+}

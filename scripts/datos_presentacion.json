@@ -1,6 +1,6 @@
 {
   "base": {
-    "carpeta": "20261011_163331_caso_base",
+    "carpeta": "20261013_235310_caso_base",
     "proveedor": "groq",
     "elegida": "H",
     "nombre_elegida": "Línea base: heurística voraz sin LLM",
@@ -9,32 +9,32 @@
       {
         "id": "A",
         "nombre": "Agrupación geográfica",
-        "costo": 450.6,
-        "pct": 57.9,
-        "urgentes": "3/6",
-        "hora_fin": "13:10",
-        "factible": true,
-        "puntaje": 54.7
+        "costo": 399.6,
+        "pct": 89.5,
+        "urgentes": "6/6",
+        "hora_fin": "12:43",
+        "factible": false,
+        "puntaje": 46.5
       },
       {
         "id": "B",
         "nombre": "Protección de ventanas críticas",
-        "costo": 402.7,
-        "pct": 78.9,
-        "urgentes": "5/6",
-        "hora_fin": "12:41",
-        "factible": true,
-        "puntaje": 73.2
+        "costo": 392.8,
+        "pct": 84.2,
+        "urgentes": "6/6",
+        "hora_fin": "13:22",
+        "factible": false,
+        "puntaje": 41.3
       },
       {
         "id": "C",
-        "nombre": "Consolidación mínima de vehículos",
-        "costo": 405.1,
-        "pct": 89.5,
-        "urgentes": "5/6",
-        "hora_fin": "12:25",
-        "factible": false,
-        "puntaje": 39.2
+        "nombre": "Consolidación mínima",
+        "costo": 432.9,
+        "pct": 68.4,
+        "urgentes": "3/6",
+        "hora_fin": "13:57",
+        "factible": true,
+        "puntaje": 49.2
       },
       {
         "id": "H",
@@ -48,33 +48,32 @@
       }
     ],
     "decision": {
-      "resumen": "Se selecciona la estrategia H (línea base voraz) porque es la única factible con puntaje máximo (100) y mantiene puntualidad y entregas urgentes al 100% incluso bajo estrés (+30% tráfico). No se requiere escalado y los riesgos son manejables.",
+      "resumen": "Se selecciona la estrategia H (línea base) porque maximiza la puntualidad (100 % en escenario base y sin caída bajo estrés), cumple todas las urgencias, tiene el menor costo y el puntaje más alto (100). Aunque usa los 5 vehículos y uno está al 99.2 % de su capacidad, el riesgo es medio y la complejidad alta, pero sigue siendo la opción que mejor satisface el objetivo del día (puntualidad 30 %).",
       "por_que": [
-        "Puntaje máximo (100) frente a B (73.2), A (54.7) y C (no factible).",
-        "Mantiene 19/19 entregas a tiempo y 6/6 urgentes sin tardanza.",
-        "Bajo prueba de estrés la puntualidad y urgentes permanecen al 100%, sin caída de puntaje.",
-        "Cumple con los pesos del objetivo: puntualidad 30% y urgentes 30% se satisfacen plenamente."
+        "Puntualidad total (19/19) y sin caída bajo estrés (100 % → 100 %).",
+        "Todas las entregas urgentes a tiempo (6/6).",
+        "Costo más bajo (S/ 356.1) y menor km (158.5).",
+        "Cumple el objetivo de puntualidad (peso 30 %) y urgentes (30 %)."
       ],
       "riesgos": [
         {
-          "riesgo": "Posible saturación de la furgoneta F1 con 7 pedidos (P09, P07, P11, P03, P01, P04, P06).",
-          "mitigacion": "Revisar capacidad de carga antes de salir; si supera el límite, reubicar P06 a F2 que tiene espacio disponible."
+          "riesgo": "Sobrecarga del vehículo F1 (99.2 % de capacidad)",
+          "mitigacion": "Revisar carga antes de salida y, si supera 95 %, redistribuir pedidos menores a M1 o M2."
         },
         {
-          "riesgo": "Dependencia de la van V1 para 5 pedidos secos en zonas dispersas.",
-          "mitigacion": "Verificar rutas en la app de tráfico; ajustar orden de visita si hay congestión inesperada."
+          "riesgo": "Posible falla de un vehículo (5 vehículos en uso)",
+          "mitigacion": "Mantener una moto de reserva (M1/M2) con capacidad para cubrir un pedido crítico."
         }
       ],
       "revisar_antes_de_aplicar": [
-        "Confirmar capacidad de carga de cada furgoneta y van (peso y volumen).",
-        "Validar disponibilidad de conductores y estado de los vehículos.",
-        "Chequear que los pedidos urgentes (P09, P19) estén listos para cargar.",
-        "Revisar la ventana horaria de cada pedido en el sistema TMS."
+        "Confirmar que la carga de F1 no exceda su límite de peso/volumen.",
+        "Verificar disponibilidad de combustible y estado mecánico de los 5 vehículos.",
+        "Chequear que los pedidos urgentes estén asignados a los vehículos correctos según la secuencia H."
       ],
       "confianza": "alta"
     },
-    "tokens": 31089,
-    "llamadas": 9,
+    "tokens": 36094,
+    "llamadas": 10,
     "modelos": [
       "openai/gpt-oss-120b",
       "qwen/qwen3.8-27b"
@@ -82,14 +81,14 @@
     "tool_calls": 8,
     "tool_calls_por_agente": {
       "analista": 6,
-      "evaluador": 2
+      "evaluador": 1
     },
-    "auditoria_ok": 11,
+    "auditoria_ok": 10,
     "auditoria_total": 11,
     "auditoria_criticas": 0,
     "escalar": false,
-    "iteraciones": 1,
-    "segundos": 51.0
+    "iteraciones": 2,
+    "segundos": 22.6
   },
   "heuristica": {
     "elegida": {
@@ -101,11 +100,11 @@
       "factible": true
     },
     "mejor_agentes": {
-      "id": "B",
-      "puntaje": 73.2,
-      "costo": 402.7,
-      "pct": 78.9,
-      "urgentes": "5/6",
+      "id": "C",
+      "puntaje": 49.2,
+      "costo": 432.9,
+      "pct": 68.4,
+      "urgentes": "3/6",
       "factible": true
     },
     "heuristica": {
@@ -118,84 +117,82 @@
     }
   },
   "degradado": {
-    "carpeta": "20261011_163508_escenario_degradado",
+    "carpeta": "20261013_235341_escenario_degradado",
     "proveedor": "groq",
-    "elegida": "A",
-    "nombre_elegida": "Agrupación geográfica",
+    "elegida": "C",
+    "nombre_elegida": "Consolidación mínima de vehículos",
     "objetivo": "balanceado",
     "estrategias": [
       {
         "id": "A",
         "nombre": "Agrupación geográfica",
-        "costo": 474.9,
-        "pct": 30.0,
-        "urgentes": "5/8",
-        "hora_fin": "19:57",
+        "costo": 600.6,
+        "pct": 40.0,
+        "urgentes": "3/8",
+        "hora_fin": "22:39",
         "factible": false,
-        "puntaje": 11.8
+        "puntaje": 15.1
       },
       {
         "id": "B",
         "nombre": "Protección de ventanas críticas",
-        "costo": 436.2,
+        "costo": 578.1,
         "pct": 20.0,
-        "urgentes": "3/8",
-        "hora_fin": "19:07",
+        "urgentes": "4/8",
+        "hora_fin": "21:47",
         "factible": false,
-        "puntaje": 8.7
+        "puntaje": 14.5
       },
       {
         "id": "C",
         "nombre": "Consolidación mínima de vehículos",
-        "costo": 519.3,
-        "pct": 30.0,
-        "urgentes": "5/8",
-        "hora_fin": "19:29",
+        "costo": 453.2,
+        "pct": 40.0,
+        "urgentes": "2/8",
+        "hora_fin": "19:04",
         "factible": false,
-        "puntaje": 11.6
+        "puntaje": 18.3
       },
       {
         "id": "H",
         "nombre": "Línea base: heurística voraz sin LLM",
-        "costo": 217.7,
+        "costo": 423.7,
         "pct": 10.0,
         "urgentes": "2/8",
-        "hora_fin": "13:14",
+        "hora_fin": "17:44",
         "factible": false,
-        "puntaje": 24.0
+        "puntaje": 16.3
       }
     ],
     "decision": {
-      "resumen": "Se opta por la estrategia A (agrupación geográfica) como la de menor daño pese a ser no factible. Necesita ajustes: asignar el pedido P17, reducir el sobrepeso de la segunda vuelta de F1 (655 kg > 600 kg) moviendo ~55 kg a otra vuelta o a un vehículo extra, y validar la capacidad de frío. Estos cambios permiten cumplir con los pesos del objetivo (puntualidad 25 %, urgentes 20 %) sin romper la capacidad de los vehículos.",
+      "resumen": "Ninguna estrategia propuesta cumple con las restricciones de capacidad y refrigeración. Se elige la estrategia C por ser la de menor costo y menor tiempo fuera de turno, pero requiere autorización para añadir al menos un tercer vehículo y permitir una segunda vuelta para distribuir la carga (1512 kg total > 600 kg por vuelta) y cubrir los 1127 kg de productos refrigerados.",
       "por_que": [
-        "Objetivo balanceado: la puntualidad (30 % en A) y urgentes (5/8) son los más altos entre las opciones factibles‑en‑papel.",
-        "Costo (S/ 474.9) es intermedio pero aceptable frente a la necesidad de replanificar.",
-        "Menor caída de puntualidad bajo estrés (+5 pts) comparado con C y H.",
-        "Requiere menos ajustes que B y C (solo un sobrepeso y un pedido sin asignar)."
+        "Costo más bajo (S/ 453.2) y menor tiempo fuera de turno (334 min) entre las opciones no factibles.",
+        "Mayor puntualidad (40% a tiempo) que B y H, aunque sigue insuficiente.",
+        "Violaciones de capacidad son críticas pero pueden mitigarse con un vehículo adicional."
       ],
       "riesgos": [
         {
-          "riesgo": "Sobrecarga de F1 en segunda vuelta (655 kg > 600 kg)",
-          "mitigacion": "Reasignar pedidos de peso ≈55 kg a la primera vuelta de F1 o a M1; si no es posible, contratar una moto extra para esa carga."
+          "riesgo": "Sobrecarga de F1 en la primera vuelta (1492 kg > 600 kg)",
+          "mitigacion": "Añadir un tercer vehículo con capacidad de carga o programar una segunda vuelta para F1, redistribuyendo pedidos pesados."
         },
         {
-          "riesgo": "Pedido P17 sin asignar",
-          "mitigacion": "Incluir P17 en una segunda vuelta de F1 o asignarlo a M1, verificando requisitos de frío."
+          "riesgo": "Productos refrigerados (1127 kg) exceden la capacidad de frío por vuelta (630 kg)",
+          "mitigacion": "Asignar los pedidos refrigerados a M1 y al nuevo vehículo con cámara fría, o dividirlos en dos vueltas."
         },
         {
-          "riesgo": "Capacidad de frío excedida (1127 kg > 630 kg por vuelta)",
-          "mitigacion": "Separar los productos refrigerados en dos vueltas o usar un vehículo con cámara fría adicional."
+          "riesgo": "Pedidos urgentes (P20) podrían retrasarse si no se prioriza adecuadamente",
+          "mitigacion": "Garantizar que P20 sea el primer despacho del vehículo asignado al Callao, con salida inmediata."
         }
       ],
       "revisar_antes_de_aplicar": [
-        "Confirmar pesos exactos de los pedidos que se moverán para no superar 600 kg por vuelta.",
-        "Verificar que P17 cumpla con requisitos de frío y peso antes de asignarlo.",
-        "Chequear disponibilidad de un vehículo extra o moto para cubrir el sobrepeso.",
-        "Recalcular la hora estimada de llegada del último pedido tras los ajustes."
+        "Verificar peso total asignado a cada vehículo y confirmar que no supere 600 kg por vuelta.",
+        "Comprobar que los pedidos refrigerados estén distribuidos entre vehículos con cámara fría.",
+        "Confirmar disponibilidad de un tercer vehículo o la posibilidad de segunda vuelta antes de iniciar la ruta."
       ],
       "confianza": "media"
     },
-    "tokens": 39396,
+    "tokens": 35163,
     "llamadas": 10,
     "modelos": [
       "openai/gpt-oss-120b",
@@ -206,11 +203,11 @@
       "analista": 6,
       "evaluador": 1
     },
-    "auditoria_ok": 4,
+    "auditoria_ok": 7,
     "auditoria_total": 11,
-    "auditoria_criticas": 3,
+    "auditoria_criticas": 2,
     "escalar": true,
     "iteraciones": 2,
-    "segundos": 96.1
+    "segundos": 30.6
   }
 }

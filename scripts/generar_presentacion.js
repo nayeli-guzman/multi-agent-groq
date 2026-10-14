@@ -114,7 +114,7 @@ async function filaIcono(slide, ico, titulo, cuerpo, x, y, w, color, oscuro = fa
   const agentes = [
     ["FaClipboardList", "1 · Analista", "qwen3.8-27b · 6 tools", "Traduce el prompt en cambios validados en el estado.", "Inventar datos → tools que validan", HEX.accent2],
     ["FaRoute", "2 · Planificador", "gpt-oss-120b · JSON estricto", "Propone 3 estrategias; el código agrega una línea base H.", "Variantes cosméticas → 3 lógicas obligatorias", HEX.accent1],
-    ["FaChartBar", "3 · Evaluador", "qwen3.8-27b · 2 tools", "Simula y compara tiempo, costo, complejidad y riesgo.", "Opinar sin medir → simular es obligatorio", HEX.accent2],
+    ["FaChartBar", "3 · Evaluador", "gpt-oss-120b · 2 tools", "Simula y compara tiempo, costo, complejidad y riesgo.", "Opinar sin medir → simular es obligatorio", HEX.accent2],
     ["FaGavel", "4 · Decisor", "gpt-oss-120b · JSON estricto", "Elige, justifica y deja riesgos y checklist.", "Cifras inventadas → auditoría", HEX.accent1],
   ];
   for (let i = 0; i < agentes.length; i++) {
@@ -180,7 +180,7 @@ async function filaIcono(slide, ico, titulo, cuerpo, x, y, w, color, oscuro = fa
   texto(s, [{ text: `${(B.tokens / 1000).toFixed(1)} mil tokens`, options: { fontSize: 26, bold: true, color: C.accent1, fontFace: "Cambria", breakLine: true } },
             { text: `por corrida completa · ${B.llamadas} llamadas a la API · 2 modelos para repartir la cuota por minuto`, options: { fontSize: 13, color: C.text2 } }],
         { x: 7.35, y: 5.62, w: 5.2, h: 1.0, valign: "middle", objectName: "consumo texto" });
-  s.addNotes("Groq limita los tokens por minuto por modelo: por eso Analista y Evaluador usan qwen3.8-27b (tool calls en paralelo) y Planificador y Decisor usan gpt-oss-120b (razonamiento y JSON estricto). Llama ya no estaba disponible en Groq: el gestor lo detecta y usa la cadena de respaldo. Recomendamos 3 o más keys para la demo.");
+  s.addNotes("Groq limita los tokens por minuto por modelo: el Analista usa qwen3.8-27b (tool calls en paralelo, respuestas cortas) y Planificador, Evaluador y Decisor usan gpt-oss-120b (razonamiento, JSON estricto y respuestas largas: qwen solo admite 1000 tokens de salida por minuto). Llama ya no estaba disponible en Groq: el gestor lo detecta y usa la cadena de respaldo. Recomendamos 3 o más keys para la demo.");
 
   // 6 · Demo ------------------------------------------------------------
   s = pres.addSlide({ masterName: "OSCURO", sectionTitle: "Implementación" });

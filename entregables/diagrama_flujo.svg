@@ -122,7 +122,7 @@
 <title>evalua</title>
 <path fill="#cde2fb" stroke="#2a78d6" stroke-width="1.2" d="M465.5,-515C465.5,-515 280.75,-515 280.75,-515 274.75,-515 268.75,-509 268.75,-503 268.75,-503 268.75,-491 268.75,-491 268.75,-485 274.75,-479 280.75,-479 280.75,-479 465.5,-479 465.5,-479 471.5,-479 477.5,-485 477.5,-491 477.5,-491 477.5,-503 477.5,-503 477.5,-509 471.5,-515 465.5,-515"/>
 <text xml:space="preserve" text-anchor="start" x="284.62" y="-497.55" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="11.00" fill="#0b0b0b">Agente 3 · Evaluador de eficiencia</text>
-<text xml:space="preserve" text-anchor="start" x="276.75" y="-488.45" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#0b0b0b">qwen3.8&#45;27b · temp 0.2 · tool calling obligatorio</text>
+<text xml:space="preserve" text-anchor="start" x="276.75" y="-488.45" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#0b0b0b">gpt&#45;oss&#45;120b · temp 0.2 · tool calling obligatorio</text>
 </g>
 <!-- planif&#45;&gt;evalua -->
 <g id="edge8" class="edge">

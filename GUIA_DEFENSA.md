@@ -37,11 +37,11 @@ Este documento es solo para el equipo y no se entrega. Sirve para preparar la ex
 
 ## 2b. Resultados de la corrida final con Groq (para las slides 6–7)
 
-**Caso base (5 inputs, objetivo: puntualidad).** El Analista (qwen3.8-27b) hizo 6 *tool calls* correctas en paralelo. El Planificador (gpt-oss-120b) propuso 3 estrategias: A y B factibles, C no factible (P19 asignado dos veces). El Decisor eligió **H** (19/19 a tiempo, 6/6 urgentes, S/ 356.1, puntaje 100) frente a la mejor del LLM, B (73.2 puntos: 15/19 a tiempo). Auditoría 11/11. Duración 51 s y ~31 mil tokens.
+**Caso base (5 inputs, objetivo: puntualidad).** El Analista (qwen3.8-27b) hizo 6 *tool calls* correctas en paralelo. En la primera propuesta del Planificador (gpt-oss-120b) ninguna estrategia era factible, así que el sistema **replanificó** con las violaciones exactas, y en la segunda salió una factible (C: 13/19 a tiempo, 49.2 puntos). El Decisor eligió **H** (19/19 a tiempo, 6/6 urgentes, S/ 356.1, 100 puntos). La auditoría dio 10/11: la única advertencia es que el Decisor citó cifras desactualizadas de la primera iteración (95.0), y la auditoría lo detectó. Tardó 23 s y usó ~36 mil tokens.
 
-**Cómo contarlo:** "Los agentes generaron alternativas factibles, el simulador las midió y el Decisor eligió la mejor, que en este caso fue nuestra línea base. Lo reportamos tal cual: para este día, la regla simple fue más puntual. El valor del sistema está en interpretar el pedido en lenguaje natural, medir todas las opciones con el mismo criterio y no dejar pasar un plan malo."
+**Cómo contarlo:** "Los agentes generaron alternativas, el simulador las midió, el sistema replanificó cuando no hubo ninguna factible y el Decisor eligió la mejor, que en este caso fue nuestra línea base. Lo reportamos tal cual: para este día, la regla simple fue más puntual. El valor del sistema está en interpretar el pedido en lenguaje natural, medir todas las opciones con el mismo criterio y no dejar pasar un plan malo ni una cifra inventada."
 
-**Escenario degradado (2 inputs, flota insuficiente).** El sistema replanificó una vez. El Decisor eligió A, que no era factible y estaba por debajo del #1 numérico, sin justificarlo, y citó una cifra (9.0) que no existe en el simulador. **La auditoría detectó las tres cosas** (violaciones duras, desviación no justificada y cifra no verificada) y escaló a una persona. Es el mejor ejemplo de por qué la decisión final no puede quedar solo en manos del LLM.
+**Escenario degradado (2 inputs, flota insuficiente).** El sistema replanificó una vez y ninguna opción alcanzaba (falta capacidad). El Decisor eligió C, la de mejor puntaje entre opciones malas, pero **la auditoría detectó** la violación de capacidad y la puntualidad del 40% (por debajo del umbral de 70%) y **escaló a una persona**.
 
 **Historia de mejoras (sirve para defender el "uso metódico", no el "copiar sugerencias"):**
 1. Groq ya no ofrecía Llama → el *preflight* lo detectó y reasignamos el Analista y el Evaluador a qwen3.8-27b (verificamos sus *tool calls* en paralelo).
@@ -49,6 +49,8 @@ Este documento es solo para el equipo y no se entrega. Sirve para preparar la ex
 3. El Evaluador hizo 9 pruebas de estrés en una corrida y gastó ~45% de la cuota diaria → limitamos a 3 rondas y 1 prueba extra.
 4. El Planificador ponía pollo en la van sin frío y dejaba pedidos sin asignar → le dimos la vista por distrito con kg refrigerados y la regla para repartir distritos mixtos. Pasó de 0/3 a 2/3 estrategias factibles en la corrida final.
 5. Las motos salían a las 7:30 y esperaban con pollo en la caja térmica → agregamos la salida diferida al simulador.
+6. En el ensayo de la demo, Groq rechazaba la respuesta del Evaluador: qwen tiene límites separados (7 mil de entrada y 1 mil de **salida** por minuto) → movimos el Evaluador a gpt-oss-120b, y el gestor ahora distingue "entrada demasiado grande", "salida demasiado grande" y "cuota ocupada".
+7. Con una furgoneta en el taller, la línea base H dejaba pedidos sin asignar → ahora puede hacer segunda vuelta.
 
 Las corridas anteriores quedaron como evidencia en `evidencias/_previas/`.
 
@@ -75,7 +77,7 @@ Para que el flujo sea reproducible y auditable. Qué agente va después y cuánd
 El gestor lee las cabeceras `x-ratelimit-*` de cada respuesta y elige la key con más margen. Ante un 429, bloquea esa key los segundos que indica `retry-after` y rota a otra. Si un modelo no está disponible, pasa al de respaldo. Por eso llevamos keys de 3 o más integrantes.
 
 **¿Por qué dos modelos distintos?**
-Groq limita los tokens por minuto por modelo (8 mil en la capa gratuita). El Analista y el Evaluador usan `qwen3.8-27b` y el Planificador y el Decisor usan `gpt-oss-120b`, así cada par consume una cuota distinta. Además, cada modelo calza con su rol: qwen hace *tool calls* en paralelo (lo verificamos: registra varios cambios en una sola respuesta), y gpt-oss razona y admite JSON con esquema estricto, ideal para las estrategias y la decisión.
+Cada modelo calza con un rol y tiene límites distintos en la capa gratuita de Groq. El Analista usa `qwen3.8-27b` porque hace *tool calls* en paralelo (registra varios cambios en una sola respuesta) y sus respuestas son cortas. Planificador, Evaluador y Decisor usan `gpt-oss-120b`, que razona, admite JSON con esquema estricto y respuestas largas. Lo aprendimos en el ensayo: qwen solo admite **1000 tokens de salida por minuto**, y la evaluación en JSON del Evaluador no cabía. Separar modelos también reparte la cuota por minuto.
 
 **¿No iban a usar Llama?**
 Sí, lo diseñamos con `llama-3.3-70b`, pero el día de la corrida Groq ya no lo ofrecía. El *preflight* lo detectó (`models.list()`) y reasignamos los agentes. Aunque no lo hubiéramos hecho, la cadena de respaldo de cada agente habría usado otro modelo disponible. Es un buen ejemplo de por qué la gestión de modelos es parte del diseño.
