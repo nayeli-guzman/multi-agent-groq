@@ -1,0 +1,2398 @@
+{
+  "etiqueta": "demo_en_vivo",
+  "fecha": "2026-10-14T00:01:45",
+  "proveedor": "groq",
+  "entradas": {
+    "pedidos": "Agreguen un pedido urgente de 20 kg de pollo en Lince entre 8:30 y 9:15",
+    "flota": "Hoy se malogró una furgoneta",
+    "restricciones": "Hay una marcha en Jesús María: 50% más lento",
+    "objetivo": "Hoy importa gastar lo menos posible"
+  },
+  "cambios_aplicados": [
+    "Nuevo P19: 20 kg refrigerado en Lince, 08:30-09:15, urgente",
+    "Restricción: congestión ×1.5 en Jesús María (Marcha en Jesús María)",
+    "Operación: flota {'furgoneta_refrigerada': 1, 'van': 1, 'moto': 2}, turno 07:30-13:30, objetivo costo"
+  ],
+  "agentes": [
+    {
+      "agente": "analista",
+      "modelo": "qwen/qwen3.8-27b",
+      "segundos": 5.2,
+      "tokens": 14425,
+      "texto": "### Configuración aplicada\n- **Flota:** 1 furgoneta refrigerada (600 kg), 1 van (400 kg), 2 motos (30 kg c/u). Se retiró la furgoneta malograda (F2).\n- **Turno:** 07:30–13:30 (por defecto).\n- **Objetivo:** costo (gastar lo menos posible).\n- **Restricción:** congestión ×1.5 en Jesús María (marcha), afecta a P07.\n\n### Cambios en pedidos\n- **P19 (nuevo):** Lince, 20 kg refrigerado, 08:30–09:15, urgente.\n\n### Alertas críticas\n1. **CAPACIDAD:** demanda total 1312 kg > 1060 kg de capacidad por vuelta → se requieren segundas vueltas o más vehículos.\n2. **FRÍO:** 967 kg refrigerados > 660 kg de capacidad con frío por vuelta → el frío es el cuello de botella; hay que fraccionar en varias salidas.\n\n### Supuestos y datos faltantes\n- \"Pollo\" se interpretó como **refrigerado** (pollo fresco para pollerías/parrillas).\n- Horario no especificado: se mantiene el turno por defecto 07:30–13:30.\n- \"50% más lento\" → factor 1.5.\n- No se indicó qué furgoneta se malogró; se asume F2 (queda F1).",
+      "datos": null,
+      "tools": [
+        {
+          "agente": "analista",
+          "ronda": 1,
+          "tool": "agregar_pedido",
+          "args": "{\"distrito\":\"Lince\",\"kg\":20,\"prioridad\":\"urgente\",\"tipo\":\"refrigerado\",\"ventana_fin\":\"09:15\",\"ventana_inicio\":\"08:30\"}",
+          "ok": true,
+          "resultado": {
+            "ok": true,
+            "id": "P19",
+            "distrito": "Lince",
+            "kg": 20.0,
+            "tipo": "refrigerado",
+            "ventana": "08:30-09:15",
+            "prioridad": "urgente"
+          }
+        },
+        {
+          "agente": "analista",
+          "ronda": 1,
+          "tool": "registrar_restriccion",
+          "args": "{\"distritos\":[\"Jesús María\"],\"factor\":1.5,\"motivo\":\"Marcha en Jesús María\",\"tipo\":\"congestion\"}",
+          "ok": true,
+          "resultado": {
+            "ok": true,
+            "registrada": "congestión ×1.5 en Jesús María (Marcha en Jesús María)",
+            "pedidos_afectados": [
+              "P07"
+            ]
+          }
+        },
+        {
+          "agente": "analista",
+          "ronda": 2,
+          "tool": "configurar_operacion",
+          "args": "{\"furgonetas_refrigeradas\":1,\"objetivo\":\"costo\"}",
+          "ok": true,
+          "resultado": {
+            "ok": true,
+            "flota": [
+              "F1 furgoneta_refrigerada 600 kg",
+              "V1 van 400 kg",
+              "M1 moto 30 kg",
+              "M2 moto 30 kg"
+            ],
+            "turno": "07:30-13:30",
+            "objetivo": "costo",
+            "capacidad_total_kg": 1060,
+            "capacidad_con_frio_kg": 660
+          }
+        },
+        {
+          "agente": "analista",
+          "ronda": 3,
+          "tool": "resumen_operacion",
+          "args": "{}",
+          "ok": true,
+          "resultado": {
+            "ok": true,
+            "pedidos": 19,
+            "kg_total": 1312,
+            "kg_refrigerado": 967,
+            "urgentes": [
+              "P03",
+              "P07",
+              "P09",
+              "P11",
+              "P16",
+              "P19"
+            ],
+            "turno": "07:30-13:30",
+            "objetivo": "costo",
+            "flota": [
+              "F1 furgoneta_refrigerada",
+              "V1 van",
+              "M1 moto",
+              "M2 moto"
+            ],
+            "capacidad": {
+              "total_kg": 1060,
+              "con_frio_kg": 660
+            },
+            "restricciones": [
+              "congestión ×1.5 en Jesús María (Marcha en Jesús María)"
+            ],
+            "por_distrito": [
+              {
+                "distrito": "Barranco",
+                "pedidos": [
+                  "P02",
+                  "P16"
+                ],
+                "kg": 37,
+                "kg_frio": 12,
+                "urgentes": 1,
+                "cierra_primero": "10:00",
+                "min_desde_almacen": 20
+              },
+              {
+                "distrito": "Chorrillos",
+                "pedidos": [
+                  "P06"
+                ],
+                "kg": 130,
+                "kg_frio": 130,
+                "urgentes": 0,
+                "cierra_primero": "11:30",
+                "min_desde_almacen": 31
+              },
+              {
+                "distrito": "Jesús María",
+                "pedidos": [
+                  "P07"
+                ],
+                "kg": 85,
+                "kg_frio": 85,
+                "urgentes": 1,
+                "cierra_primero": "10:00",
+                "min_desde_almacen": 41
+              },
+              {
+                "distrito": "La Molina",
+                "pedidos": [
+                  "P08",
+                  "P17"
+                ],
+                "kg": 190,
+                "kg_frio": 150,
+                "urgentes": 0,
+                "cierra_primero": "11:00",
+                "min_desde_almacen": 39
+              },
+              {
+                "distrito": "La Victoria",
+                "pedidos": [
+                  "P15"
+                ],
+                "kg": 90,
+                "kg_frio": 90,
+                "urgentes": 0,
+                "cierra_primero": "10:30",
+                "min_desde_almacen": 23
+              },
+              {
+                "distrito": "Lince",
+                "pedidos": [
+                  "P09",
+                  "P19"
+                ],
+                "kg": 40,
+                "kg_frio": 20,
+                "urgentes": 2,
+                "cierra_primero": "09:15",
+                "min_desde_almacen": 19
+              },
+              {
+                "distrito": "Magdalena del Mar",
+                "pedidos": [
+                  "P11"
+                ],
+                "kg": 15,
+                "kg_frio": 15,
+                "urgentes": 1,
+                "cierra_primero": "10:00",
+                "min_desde_almacen": 33
+              },
+              {
+                "distrito": "Miraflores",
+                "pedidos": [
+                  "P01"
+                ],
+                "kg": 110,
+                "kg_frio": 110,
+                "urgentes": 0,
+                "cierra_primero": "10:30",
+                "min_desde_almacen": 11
+              },
+              {
+                "distrito": "Pueblo Libre",
+                "pedidos": [
+                  "P10"
+                ],
+                "kg": 70,
+                "kg_frio": 0,
+                "urgentes": 0,
+                "cierra_primero": "12:30",
+                "min_desde_almacen": 34
+              },
+              {
+                "distrito": "San Borja",
+                "pedidos": [
+                  "P05"
+                ],
+                "kg": 60,
+                "kg_frio": 0,
+                "urgentes": 0,
+                "cierra_primero": "12:00",
+                "min_desde_almacen": 9
+              },
+              {
+                "distrito": "San Isidro",
+                "pedidos": [
+                  "P03",
+                  "P18"
+                ],
+                "kg": 195,
+                "kg_frio": 140,
+                "urgentes": 1,
+                "cierra_primero": "10:00",
+                "min_desde_almacen": 16
+              },
+              {
+                "distrito": "San Miguel",
+                "pedidos": [
+                  "P12"
+                ],
+                "kg": 120,
+                "kg_frio": 120,
+                "urgentes": 0,
+                "cierra_primero": "12:00",
+                "min_desde_almacen": 44
+              },
+              {
+                "distrito": "Santiago de Surco",
+                "pedidos": [
+                  "P04",
+                  "P14"
+                ],
+                "kg": 140,
+                "kg_frio": 95,
+                "urgentes": 0,
+                "cierra_primero": "11:30",
+                "min_desde_almacen": 17
+              },
+              {
+                "distrito": "Surquillo",
+                "pedidos": [
+                  "P13"
+                ],
+                "kg": 30,
+                "kg_frio": 0,
+                "urgentes": 0,
+                "cierra_primero": "11:00",
+                "min_desde_almacen": 3
+              }
+            ],
+            "alertas": [
+              "CAPACIDAD: demanda 1312 kg > 1060 kg por vuelta → hacen falta segundas vueltas o más vehículos",
+              "FRÍO: 967 kg refrigerados > 660 kg de capacidad con frío por vuelta"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "agente": "planificador",
+      "modelo": "openai/gpt-oss-120b",
+      "segundos": 7.8,
+      "tokens": 5996,
+      "texto": "{\n  \"estrategias\": [\n    {\n      \"id\": \"A\",\n      \"nombre\": \"Agrupación geográfica\",\n      \"logica\": \"Cada vehículo cubre una zona contigua para minimizar kilómetros recorridos.\",\n      \"secuencia\": \"cercania\",\n      \"rutas\": [\n        {\n          \"vehiculo\": \"M1\",\n          \"paradas\": [\"P19\"]\n        },\n        {\n          \"vehiculo\": \"M2\",\n          \"paradas\": [\"P09\"]\n        },\n        {\n          \"vehiculo\": \"F1\",\n          \"paradas\": [\n            \"P08\",          \n            \"P15\",          \n            \"P04\",          \n            \"P12\",          \n            \"P16\"           \n          ]\n        },\n        {\n          \"vehiculo\": \"F1\",\n          \"paradas\": [\n            \"Miraflores\",   \n            \"Chorrillos\",   \n            \"Jesús María\", \n            \"P03\"           \n          ]\n        },\n        {\n          \"vehiculo\": \"V1\",\n          \"paradas\": [\n            \"La Molina\",    \n            \"Barranco\",     \n            \"Pueblo Libre\", \n            \"San Borja\",    \n            \"Surquillo\",    \n            \"Santiago\",     \n            \"San Isidro\"    \n          ]\n        }\n      ],\n      \"por_que_podria_ganar\": \"Reduce kilómetros al agrupar por proximidad, aprovechando la congestión en Jesús María solo para una única furgoneta que lleva ese distrito.\",\n      \"riesgo_principal\": \"Posible sobrecarga en la segunda vuelta de la furgoneta si el tiempo de carga/re‑carga se extiende.\"\n    },\n    {\n      \"id\": \"B\",\n      \"nombre\": \"Protección de ventanas críticas\",\n      \"logica\": \"Se atienden primero los pedidos urgentes y los que cierran antes de las 10:00, aunque implique usar más vueltas.\",\n      \"secuencia\": \"ventana\",\n      \"rutas\": [\n        {\n          \"vehiculo\": \"M1\",\n          \"paradas\": [\"P19\"]\n        },\n        {\n          \"vehiculo\": \"M2\",\n          \"paradas\": [\"P09\"]\n        },\n        {\n          \"vehiculo\": \"F1\",\n          \"paradas\": [\n            \"P16\",          \n            \"P07\",          \n            \"P03\",          \n            \"P08\",          \n            \"P15\"           \n          ]\n        },\n        {\n          \"vehiculo\": \"F1\",\n          \"paradas\": [\n            \"Miraflores\",   \n            \"Chorrillos\",   \n            \"P04\",          \n            \"P12\"           \n          ]\n        },\n        {\n          \"vehiculo\": \"V1\",\n          \"paradas\": [\n            \"Barranco\",     \n            \"Pueblo Libre\", \n            \"San Borja\",    \n            \"Surquillo\",    \n            \"La Molina\",    \n            \"Santiago\",     \n            \"San Isidro\"    \n          ]\n        }\n      ],\n      \"por_que_podria_ganar\": \"Garantiza la entrega dentro de las ventanas críticas, evitando penalizaciones por retrasos en pedidos urgentes.\",\n      \"riesgo_principal\": \"Mayor número de vueltas de la furgoneta aumenta el tiempo total y el consumo de combustible.\"\n    },\n    {\n      \"id\": \"C\",\n      \"nombre\": \"Consolidación mínima de recursos\",\n      \"logica\": \"Se busca usar la menor cantidad de vehículos y vueltas posible respetando todas las reglas.\",\n      \"secuencia\": \"tal_cual\",\n      \"rutas\": [\n        {\n          \"vehiculo\": \"F1\",\n          \"paradas\": [\n            \"P08\",          \n            \"P15\",          \n            \"P04\",          \n            \"P12\",          \n            \"P16\",          \n            \"P03\",          \n            \"Miraflores\",   \n            \"Chorrillos\",   \n            \"Jesús María\"   \n          ]\n        },\n        {\n          \"vehiculo\": \"V1\",\n          \"paradas\": [\n            \"La Molina\",    \n            \"Barranco\",     \n            \"Pueblo Libre\", \n            \"San Borja\",    \n            \"Surquillo\",    \n            \"Santiago\",     \n            \"San Isidro\"    \n          ]\n        }\n      ],\n      \"por_que_podria_ganar\": \"Utiliza solo la furgoneta y la van, evitando el uso de motos y reduciendo costos de combustible y tiempo de carga.\",\n      \"riesgo_principal\": \"Al concentrar todo el refrigerado en una sola furgoneta, cualquier retraso o problema mecánico afecta a la mayoría de los pedidos.\"\n    }\n  ]\n}",
+      "datos": {
+        "estrategias": [
+          {
+            "id": "A",
+            "nombre": "Agrupación geográfica",
+            "logica": "Cada vehículo cubre una zona contigua para minimizar kilómetros recorridos.",
+            "secuencia": "cercania",
+            "rutas": [
+              {
+                "vehiculo": "M1",
+                "paradas": [
+                  "P19"
+                ]
+              },
+              {
+                "vehiculo": "M2",
+                "paradas": [
+                  "P09"
+                ]
+              },
+              {
+                "vehiculo": "F1",
+                "paradas": [
+                  "P08",
+                  "P15",
+                  "P04",
+                  "P12",
+                  "P16"
+                ]
+              },
+              {
+                "vehiculo": "F1",
+                "paradas": [
+                  "Miraflores",
+                  "Chorrillos",
+                  "Jesús María",
+                  "P03"
+                ]
+              },
+              {
+                "vehiculo": "V1",
+                "paradas": [
+                  "La Molina",
+                  "Barranco",
+                  "Pueblo Libre",
+                  "San Borja",
+                  "Surquillo",
+                  "Santiago",
+                  "San Isidro"
+                ]
+              }
+            ],
+            "por_que_podria_ganar": "Reduce kilómetros al agrupar por proximidad, aprovechando la congestión en Jesús María solo para una única furgoneta que lleva ese distrito.",
+            "riesgo_principal": "Posible sobrecarga en la segunda vuelta de la furgoneta si el tiempo de carga/re‑carga se extiende."
+          },
+          {
+            "id": "B",
+            "nombre": "Protección de ventanas críticas",
+            "logica": "Se atienden primero los pedidos urgentes y los que cierran antes de las 10:00, aunque implique usar más vueltas.",
+            "secuencia": "ventana",
+            "rutas": [
+              {
+                "vehiculo": "M1",
+                "paradas": [
+                  "P19"
+                ]
+              },
+              {
+                "vehiculo": "M2",
+                "paradas": [
+                  "P09"
+                ]
+              },
+              {
+                "vehiculo": "F1",
+                "paradas": [
+                  "P16",
+                  "P07",
+                  "P03",
+                  "P08",
+                  "P15"
+                ]
+              },
+              {
+                "vehiculo": "F1",
+                "paradas": [
+                  "Miraflores",
+                  "Chorrillos",
+                  "P04",
+                  "P12"
+                ]
+              },
+              {
+                "vehiculo": "V1",
+                "paradas": [
+                  "Barranco",
+                  "Pueblo Libre",
+                  "San Borja",
+                  "Surquillo",
+                  "La Molina",
+                  "Santiago",
+                  "San Isidro"
+                ]
+              }
+            ],
+            "por_que_podria_ganar": "Garantiza la entrega dentro de las ventanas críticas, evitando penalizaciones por retrasos en pedidos urgentes.",
+            "riesgo_principal": "Mayor número de vueltas de la furgoneta aumenta el tiempo total y el consumo de combustible."
+          },
+          {
+            "id": "C",
+            "nombre": "Consolidación mínima de recursos",
+            "logica": "Se busca usar la menor cantidad de vehículos y vueltas posible respetando todas las reglas.",
+            "secuencia": "tal_cual",
+            "rutas": [
+              {
+                "vehiculo": "F1",
+                "paradas": [
+                  "P08",
+                  "P15",
+                  "P04",
+                  "P12",
+                  "P16",
+                  "P03",
+                  "Miraflores",
+                  "Chorrillos",
+                  "Jesús María"
+                ]
+              },
+              {
+                "vehiculo": "V1",
+                "paradas": [
+                  "La Molina",
+                  "Barranco",
+                  "Pueblo Libre",
+                  "San Borja",
+                  "Surquillo",
+                  "Santiago",
+                  "San Isidro"
+                ]
+              }
+            ],
+            "por_que_podria_ganar": "Utiliza solo la furgoneta y la van, evitando el uso de motos y reduciendo costos de combustible y tiempo de carga.",
+            "riesgo_principal": "Al concentrar todo el refrigerado en una sola furgoneta, cualquier retraso o problema mecánico afecta a la mayoría de los pedidos."
+          }
+        ]
+      },
+      "tools": []
+    },
+    {
+      "agente": "evaluador",
+      "modelo": "openai/gpt-oss-120b",
+      "segundos": 2.8,
+      "tokens": 5094,
+      "texto": "{\n  \"evaluaciones\": [\n    {\n      \"id\": \"A\",\n      \"factible\": false,\n      \"tiempo\": \"15:48, 138 min fuera de turno\",\n      \"costo\": \"S/ 399.6\",\n      \"complejidad\": \"media\",\n      \"riesgo\": \"alto\",\n      \"ventajas\": [],\n      \"desventajas\": [\n        \"violaciones: parada 'Santiago' no es un pedido ni un distrito válido\",\n        \"pedidos sin asignar: P11, P14\",\n        \"caída de puntualidad en estrés +30%: 5.3 pts\"\n      ]\n    },\n    {\n      \"id\": \"B\",\n      \"factible\": false,\n      \"tiempo\": \"14:47, 77 min fuera de turno\",\n      \"costo\": \"S/ 412.2\",\n      \"complejidad\": \"media\",\n      \"riesgo\": \"alto\",\n      \"ventajas\": [],\n      \"desventajas\": [\n        \"violaciones: parada 'Santiago' no es un pedido ni un distrito válido\",\n        \"pedidos sin asignar: P11, P14\",\n        \"caída de puntualidad en estrés +30%: 15.8 pts (>15 → alto)\"\n      ]\n    },\n    {\n      \"id\": \"C\",\n      \"factible\": false,\n      \"tiempo\": \"15:41, 131 min fuera de turno\",\n      \"costo\": \"S/ 400.7\",\n      \"complejidad\": \"alta\",\n      \"riesgo\": \"alto\",\n      \"ventajas\": [],\n      \"desventajas\": [\n        \"violaciones: parada 'Santiago' no es un pedido ni un distrito válido\",\n        \"pedidos sin asignar: P09, P11, P14, P19\",\n        \"F1 vuelta 1: 932 kg > capacidad 600 kg\",\n        \"caída de puntualidad en estrés +30%: 5.2 pts\"\n      ]\n    },\n    {\n      \"id\": \"H\",\n      \"factible\": true,\n      \"tiempo\": \"15:38, 128 min fuera de turno\",\n      \"costo\": \"S/ 371.6\",\n      \"complejidad\": \"media\",\n      \"riesgo\": \"medio\",\n      \"ventajas\": [\n        \"todas las entregas asignadas\",\n        \"costo más bajo entre factibles\",\n        \"puntaje 68.3\"\n      ],\n      \"desventajas\": [\n        \"caída de puntualidad en estrés +30%: 10.6 pts\"\n      ]\n    }\n  ],\n  \"ranking\": [\"H\", \"B\", \"A\", \"C\"],\n  \"recomendacion\": \"Ninguna de las estrategias propuestas (A, B, C) es factible. La única opción factible es la línea base H, pero su desempeño es inferior al objetivo de costo.\",\n  \"requiere_replanificacion\": true,\n  \"feedback_planificador\": \"Eliminar la parada inválida 'Santiago' y asignar los pedidos sin cubrir (P11, P14, y en C también P09, P19). Revisar la capacidad de carga: dividir la carga de F1 en C en dos vehículos o reducir peso por vuelta. Considerar agregar al menos un vehículo adicional para cumplir la demanda total (1312 kg) y la capacidad de frío (967 kg).\"\n}",
+      "datos": {
+        "evaluaciones": [
+          {
+            "id": "A",
+            "factible": false,
+            "tiempo": "15:48, 138 min fuera de turno",
+            "costo": "S/ 399.6",
+            "complejidad": "media",
+            "riesgo": "alto",
+            "ventajas": [],
+            "desventajas": [
+              "violaciones: parada 'Santiago' no es un pedido ni un distrito válido",
+              "pedidos sin asignar: P11, P14",
+              "caída de puntualidad en estrés +30%: 5.3 pts"
+            ]
+          },
+          {
+            "id": "B",
+            "factible": false,
+            "tiempo": "14:47, 77 min fuera de turno",
+            "costo": "S/ 412.2",
+            "complejidad": "media",
+            "riesgo": "alto",
+            "ventajas": [],
+            "desventajas": [
+              "violaciones: parada 'Santiago' no es un pedido ni un distrito válido",
+              "pedidos sin asignar: P11, P14",
+              "caída de puntualidad en estrés +30%: 15.8 pts (>15 → alto)"
+            ]
+          },
+          {
+            "id": "C",
+            "factible": false,
+            "tiempo": "15:41, 131 min fuera de turno",
+            "costo": "S/ 400.7",
+            "complejidad": "alta",
+            "riesgo": "alto",
+            "ventajas": [],
+            "desventajas": [
+              "violaciones: parada 'Santiago' no es un pedido ni un distrito válido",
+              "pedidos sin asignar: P09, P11, P14, P19",
+              "F1 vuelta 1: 932 kg > capacidad 600 kg",
+              "caída de puntualidad en estrés +30%: 5.2 pts"
+            ]
+          },
+          {
+            "id": "H",
+            "factible": true,
+            "tiempo": "15:38, 128 min fuera de turno",
+            "costo": "S/ 371.6",
+            "complejidad": "media",
+            "riesgo": "medio",
+            "ventajas": [
+              "todas las entregas asignadas",
+              "costo más bajo entre factibles",
+              "puntaje 68.3"
+            ],
+            "desventajas": [
+              "caída de puntualidad en estrés +30%: 10.6 pts"
+            ]
+          }
+        ],
+        "ranking": [
+          "H",
+          "B",
+          "A",
+          "C"
+        ],
+        "recomendacion": "Ninguna de las estrategias propuestas (A, B, C) es factible. La única opción factible es la línea base H, pero su desempeño es inferior al objetivo de costo.",
+        "requiere_replanificacion": true,
+        "feedback_planificador": "Eliminar la parada inválida 'Santiago' y asignar los pedidos sin cubrir (P11, P14, y en C también P09, P19). Revisar la capacidad de carga: dividir la carga de F1 en C en dos vehículos o reducir peso por vuelta. Considerar agregar al menos un vehículo adicional para cumplir la demanda total (1312 kg) y la capacidad de frío (967 kg)."
+      },
+      "tools": [
+        {
+          "agente": "evaluador",
+          "ronda": 1,
+          "tool": "simular_estrategias",
+          "args": "{\"ids\":[\"A\",\"B\",\"C\",\"H\"]}",
+          "ok": true,
+          "resultado": {
+            "ok": true,
+            "objetivo_del_dia": "costo",
+            "pesos": {
+              "puntualidad": 0.15,
+              "urgentes": 0.15,
+              "tardanza": 0.1,
+              "costo": 0.45,
+              "tiempo": 0.15
+            },
+            "resultados": [
+              {
+                "id": "A",
+                "nombre": "Agrupación geográfica",
+                "factible": false,
+                "violaciones": [
+                  "parada 'Santiago' no es un pedido ni un distrito válido",
+                  "pedidos sin asignar: P11, P14"
+                ],
+                "costo_soles": 399.6,
+                "km": 180.5,
+                "hora_fin": "15:48",
+                "min_fuera_de_turno": 138,
+                "a_tiempo": "12/19",
+                "pct_a_tiempo": 63.2,
+                "urgentes_a_tiempo": "3/6",
+                "min_tarde_total": 889,
+                "tardes": [
+                  "P07 +258min",
+                  "P03 +227min",
+                  "P06 +221min",
+                  "P01 +177min",
+                  "P12 +6min"
+                ],
+                "vehiculos": [
+                  "M1: sale 08:16, 1 vuelta(s), 1 paradas, 20/30 kg, regreso 08:50",
+                  "M2: sale 07:47, 1 vuelta(s), 1 paradas, 20/30 kg, regreso 08:19",
+                  "F1: sale 08:42, 2 vuelta(s), 9 paradas, 467/600 kg, regreso 15:48",
+                  "V1: sale 07:57, 1 vuelta(s), 6 paradas, 280/400 kg, regreso 11:40"
+                ],
+                "puntaje": 28.7,
+                "estres_trafico_+30%": {
+                  "pct_a_tiempo": "63.2 → 57.9",
+                  "urgentes": "3/6 → 3/6",
+                  "caida_puntualidad_pts": 5.3
+                }
+              },
+              {
+                "id": "B",
+                "nombre": "Protección de ventanas críticas",
+                "factible": false,
+                "violaciones": [
+                  "parada 'Santiago' no es un pedido ni un distrito válido",
+                  "pedidos sin asignar: P11, P14"
+                ],
+                "costo_soles": 412.2,
+                "km": 189.0,
+                "hora_fin": "14:47",
+                "min_fuera_de_turno": 77,
+                "a_tiempo": "13/19",
+                "pct_a_tiempo": 68.4,
+                "urgentes_a_tiempo": "5/6",
+                "min_tarde_total": 334,
+                "tardes": [
+                  "P12 +117min",
+                  "P01 +83min",
+                  "P06 +79min",
+                  "P04 +55min"
+                ],
+                "vehiculos": [
+                  "M1: sale 08:16, 1 vuelta(s), 1 paradas, 20/30 kg, regreso 08:50",
+                  "M2: sale 07:47, 1 vuelta(s), 1 paradas, 20/30 kg, regreso 08:19",
+                  "F1: sale 07:30, 2 vuelta(s), 9 paradas, 477/600 kg, regreso 14:47",
+                  "V1: sale 07:57, 1 vuelta(s), 6 paradas, 280/400 kg, regreso 12:29"
+                ],
+                "puntaje": 32.1,
+                "estres_trafico_+30%": {
+                  "pct_a_tiempo": "68.4 → 52.6",
+                  "urgentes": "5/6 → 5/6",
+                  "caida_puntualidad_pts": 15.8
+                }
+              },
+              {
+                "id": "C",
+                "nombre": "Consolidación mínima de recursos",
+                "factible": false,
+                "violaciones": [
+                  "parada 'Santiago' no es un pedido ni un distrito válido",
+                  "pedidos sin asignar: P09, P11, P14, P19",
+                  "F1 vuelta 1: 932 kg > capacidad 600 kg"
+                ],
+                "costo_soles": 400.7,
+                "km": 174.2,
+                "hora_fin": "15:41",
+                "min_fuera_de_turno": 131,
+                "a_tiempo": "7/19",
+                "pct_a_tiempo": 36.8,
+                "urgentes_a_tiempo": "0/6",
+                "min_tarde_total": 1085,
+                "tardes": [
+                  "P07 +307min",
+                  "P03 +171min",
+                  "P01 +164min",
+                  "P16 +145min",
+                  "P06 +141min"
+                ],
+                "vehiculos": [
+                  "F1: sale 08:23, 1 vuelta(s), 9 paradas, 932/600 kg, regreso 15:41",
+                  "V1: sale 09:21, 1 vuelta(s), 6 paradas, 280/400 kg, regreso 13:07"
+                ],
+                "puntaje": 22.9,
+                "estres_trafico_+30%": {
+                  "pct_a_tiempo": "36.8 → 31.6",
+                  "urgentes": "0/6 → 0/6",
+                  "caida_puntualidad_pts": 5.2
+                }
+              },
+              {
+                "id": "H",
+                "nombre": "Línea base: heurística voraz sin LLM",
+                "factible": true,
+                "violaciones": [],
+                "costo_soles": 371.6,
+                "km": 148.6,
+                "hora_fin": "15:38",
+                "min_fuera_de_turno": 128,
+                "a_tiempo": "12/19",
+                "pct_a_tiempo": 63.2,
+                "urgentes_a_tiempo": "6/6",
+                "min_tarde_total": 708,
+                "tardes": [
+                  "P12 +157min",
+                  "P10 +154min",
+                  "P06 +112min",
+                  "P02 +106min",
+                  "P04 +87min"
+                ],
+                "vehiculos": [
+                  "F1: sale 08:10, 2 vuelta(s), 13 paradas, 590/600 kg, regreso 15:38",
+                  "V1: sale 07:57, 1 vuelta(s), 5 paradas, 230/400 kg, regreso 11:13",
+                  "M1: sale 08:48, 1 vuelta(s), 1 paradas, 12/30 kg, regreso 09:18"
+                ],
+                "puntaje": 68.3,
+                "estres_trafico_+30%": {
+                  "pct_a_tiempo": "63.2 → 52.6",
+                  "urgentes": "6/6 → 5/6",
+                  "caida_puntualidad_pts": 10.6
+                }
+              }
+            ],
+            "ranking_numerico": [
+              "H (68.3)",
+              "B (32.1)",
+              "A (28.7)",
+              "C (22.9)"
+            ],
+            "nota": "puntaje 0-100 ponderado por el objetivo; si una estrategia no es factible su puntaje se multiplica por 0.5. H es la línea base calculada por código (sin LLM)."
+          }
+        }
+      ]
+    },
+    {
+      "agente": "planificador",
+      "modelo": "openai/gpt-oss-120b",
+      "segundos": 6.6,
+      "tokens": 5710,
+      "texto": "{\n  \"estrategias\": [\n    {\n      \"id\": \"A\",\n      \"nombre\": \"Agrupación geográfica\",\n      \"logica\": \"Cada vehículo cubre una zona contigua para minimizar kilómetros.\",\n      \"secuencia\": \"cercania\",\n      \"rutas\": [\n        {\n          \"vehiculo\": \"M1\",\n          \"paradas\": [\"P19\"]\n        },\n        {\n          \"vehiculo\": \"M2\",\n          \"paradas\": [\"P09\"]\n        },\n        {\n          \"vehiculo\": \"F1\",\n          \"paradas\": [\n            \"Jesús María\",\n            \"La Victoria\",\n            \"Lince\",\n            \"San Isidro\",\n            \"P04\"\n          ]\n        },\n        {\n          \"vehiculo\": \"F1\",\n          \"paradas\": [\n            \"P06\",\n            \"P08\",\n            \"P12\",\n            \"P01\",\n            \"P11\",\n            \"P16\"\n          ]\n        },\n        {\n          \"vehiculo\": \"V1\",\n          \"paradas\": [\n            \"Barranco\",\n            \"La Molina\",\n            \"Pueblo Libre\",\n            \"San Borja\",\n            \"Surquillo\",\n            \"P14\"\n          ]\n        }\n      ],\n      \"por_que_podria_ganar\": \"Reduce kilómetros al mantener cada vehículo dentro de una zona compacta, lo que disminuye consumo de combustible y tiempo de desplazamiento.\",\n      \"riesgo_principal\": \"Si el tráfico en una zona se vuelve inesperadamente muy denso, la entrega de toda la zona puede retrasarse.\"\n    },\n    {\n      \"id\": \"B\",\n      \"nombre\": \"Protección de ventanas críticas\",\n      \"logica\": \"Se atienden primero los pedidos urgentes y con ventana de cierre antes de las 10:00.\",\n      \"secuencia\": \"urgentes_primero\",\n      \"rutas\": [\n        {\n          \"vehiculo\": \"M1\",\n          \"paradas\": [\"P19\"]\n        },\n        {\n          \"vehiculo\": \"M2\",\n          \"paradas\": [\"P09\"]\n        },\n        {\n          \"vehiculo\": \"F1\",\n          \"paradas\": [\n            \"P07\",\n            \"P16\",\n            \"P03\",\n            \"P15\",\n            \"P08\",\n            \"P04\"\n          ]\n        },\n        {\n          \"vehiculo\": \"F1\",\n          \"paradas\": [\n            \"P06\",\n            \"P01\",\n            \"P11\",\n            \"P12\"\n          ]\n        },\n        {\n          \"vehiculo\": \"V1\",\n          \"paradas\": [\n            \"Barranco\",\n            \"La Molina\",\n            \"Pueblo Libre\",\n            \"San Borja\",\n            \"Surquillo\",\n            \"P14\"\n          ]\n        }\n      ],\n      \"por_que_podria_ganar\": \"Garantiza que los pedidos con ventanas tempranas y urgentes se entreguen dentro del plazo, evitando penalizaciones por retraso.\",\n      \"riesgo_principal\": \"Al priorizar urgentes, se pueden cargar más peso en la primera vuelta de la furgoneta, acercándose al límite de capacidad.\"\n    },\n    {\n      \"id\": \"C\",\n      \"nombre\": \"Consolidación mínima\",\n      \"logica\": \"Se busca usar la menor cantidad de vehículos y vueltas cumpliendo todas las reglas.\",\n      \"secuencia\": \"tal_cual\",\n      \"rutas\": [\n        {\n          \"vehiculo\": \"M1\",\n          \"paradas\": [\"P19\"]\n        },\n        {\n          \"vehiculo\": \"M2\",\n          \"paradas\": [\"P09\"]\n        },\n        {\n          \"vehiculo\": \"F1\",\n          \"paradas\": [\n            \"Jesús María\",\n            \"La Victoria\",\n            \"Lince\",\n            \"San Isidro\",\n            \"P04\"\n          ]\n        },\n        {\n          \"vehiculo\": \"F1\",\n          \"paradas\": [\n            \"P06\",\n            \"P08\",\n            \"P12\",\n            \"P01\",\n            \"P11\",\n            \"P16\"\n          ]\n        },\n        {\n          \"vehiculo\": \"V1\",\n          \"paradas\": [\n            \"Barranco\",\n            \"La Molina\",\n            \"Pueblo Libre\",\n            \"San Borja\",\n            \"Surquillo\",\n            \"P14\"\n          ]\n        }\n      ],\n      \"por_que_podria_ganar\": \"Utiliza exactamente los recursos disponibles (una furgoneta en dos vueltas, una van en una vuelta y dos motos), minimizando costos operativos.\",\n      \"riesgo_principal\": \"Cualquier falla o retraso en la furgoneta obliga a reprogramar ambas vueltas, impactando a gran parte de los pedidos.\"\n    }\n  ]\n}",
+      "datos": {
+        "estrategias": [
+          {
+            "id": "A",
+            "nombre": "Agrupación geográfica",
+            "logica": "Cada vehículo cubre una zona contigua para minimizar kilómetros.",
+            "secuencia": "cercania",
+            "rutas": [
+              {
+                "vehiculo": "M1",
+                "paradas": [
+                  "P19"
+                ]
+              },
+              {
+                "vehiculo": "M2",
+                "paradas": [
+                  "P09"
+                ]
+              },
+              {
+                "vehiculo": "F1",
+                "paradas": [
+                  "Jesús María",
+                  "La Victoria",
+                  "Lince",
+                  "San Isidro",
+                  "P04"
+                ]
+              },
+              {
+                "vehiculo": "F1",
+                "paradas": [
+                  "P06",
+                  "P08",
+                  "P12",
+                  "P01",
+                  "P11",
+                  "P16"
+                ]
+              },
+              {
+                "vehiculo": "V1",
+                "paradas": [
+                  "Barranco",
+                  "La Molina",
+                  "Pueblo Libre",
+                  "San Borja",
+                  "Surquillo",
+                  "P14"
+                ]
+              }
+            ],
+            "por_que_podria_ganar": "Reduce kilómetros al mantener cada vehículo dentro de una zona compacta, lo que disminuye consumo de combustible y tiempo de desplazamiento.",
+            "riesgo_principal": "Si el tráfico en una zona se vuelve inesperadamente muy denso, la entrega de toda la zona puede retrasarse."
+          },
+          {
+            "id": "B",
+            "nombre": "Protección de ventanas críticas",
+            "logica": "Se atienden primero los pedidos urgentes y con ventana de cierre antes de las 10:00.",
+            "secuencia": "urgentes_primero",
+            "rutas": [
+              {
+                "vehiculo": "M1",
+                "paradas": [
+                  "P19"
+                ]
+              },
+              {
+                "vehiculo": "M2",
+                "paradas": [
+                  "P09"
+                ]
+              },
+              {
+                "vehiculo": "F1",
+                "paradas": [
+                  "P07",
+                  "P16",
+                  "P03",
+                  "P15",
+                  "P08",
+                  "P04"
+                ]
+              },
+              {
+                "vehiculo": "F1",
+                "paradas": [
+                  "P06",
+                  "P01",
+                  "P11",
+                  "P12"
+                ]
+              },
+              {
+                "vehiculo": "V1",
+                "paradas": [
+                  "Barranco",
+                  "La Molina",
+                  "Pueblo Libre",
+                  "San Borja",
+                  "Surquillo",
+                  "P14"
+                ]
+              }
+            ],
+            "por_que_podria_ganar": "Garantiza que los pedidos con ventanas tempranas y urgentes se entreguen dentro del plazo, evitando penalizaciones por retraso.",
+            "riesgo_principal": "Al priorizar urgentes, se pueden cargar más peso en la primera vuelta de la furgoneta, acercándose al límite de capacidad."
+          },
+          {
+            "id": "C",
+            "nombre": "Consolidación mínima",
+            "logica": "Se busca usar la menor cantidad de vehículos y vueltas cumpliendo todas las reglas.",
+            "secuencia": "tal_cual",
+            "rutas": [
+              {
+                "vehiculo": "M1",
+                "paradas": [
+                  "P19"
+                ]
+              },
+              {
+                "vehiculo": "M2",
+                "paradas": [
+                  "P09"
+                ]
+              },
+              {
+                "vehiculo": "F1",
+                "paradas": [
+                  "Jesús María",
+                  "La Victoria",
+                  "Lince",
+                  "San Isidro",
+                  "P04"
+                ]
+              },
+              {
+                "vehiculo": "F1",
+                "paradas": [
+                  "P06",
+                  "P08",
+                  "P12",
+                  "P01",
+                  "P11",
+                  "P16"
+                ]
+              },
+              {
+                "vehiculo": "V1",
+                "paradas": [
+                  "Barranco",
+                  "La Molina",
+                  "Pueblo Libre",
+                  "San Borja",
+                  "Surquillo",
+                  "P14"
+                ]
+              }
+            ],
+            "por_que_podria_ganar": "Utiliza exactamente los recursos disponibles (una furgoneta en dos vueltas, una van en una vuelta y dos motos), minimizando costos operativos.",
+            "riesgo_principal": "Cualquier falla o retraso en la furgoneta obliga a reprogramar ambas vueltas, impactando a gran parte de los pedidos."
+          }
+        ]
+      },
+      "tools": []
+    },
+    {
+      "agente": "evaluador",
+      "modelo": "openai/gpt-oss-120b",
+      "segundos": 3.0,
+      "tokens": 5231,
+      "texto": "{\n  \"evaluaciones\": [\n    {\n      \"id\": \"A\",\n      \"factible\": true,\n      \"tiempo\": \"15:25, 115 min fuera de turno\",\n      \"costo\": \"S/ 407.3\",\n      \"complejidad\": \"media\",\n      \"riesgo\": \"bajo\",\n      \"ventajas\": [\"Costo razonable\", \"13/19 a tiempo (68.4%)\", \"Solo 4 vehículos\"],\n      \"desventajas\": [\"Dos vueltas en F1 aumentan complejidad operativa\", \"Algunas entregas tardan >200 min\"]\n    },\n    {\n      \"id\": \"B\",\n      \"factible\": false,\n      \"tiempo\": \"15:21, 111 min fuera de turno\",\n      \"costo\": \"S/ 410.8\",\n      \"complejidad\": \"media\",\n      \"riesgo\": \"alto\",\n      \"ventajas\": [\"Mayor porcentaje de urgentes a tiempo (5/6)\"],\n      \"desventajas\": [\"Violación: pedidos sin asignar (P18)\", \"Caída puntualidad 10.6 pts bajo estrés\"]\n    },\n    {\n      \"id\": \"C\",\n      \"factible\": true,\n      \"tiempo\": \"15:50, 140 min fuera de turno\",\n      \"costo\": \"S/ 453.0\",\n      \"complejidad\": \"media\",\n      \"riesgo\": \"medio\",\n      \"ventajas\": [\"Usa menos vehículos (4) y menos kilómetros que A\", \"13/19 a tiempo (68.4%)\"],\n      \"desventajas\": [\"Mayor costo y tardanzas muy altas (hasta +331 min)\"]\n    },\n    {\n      \"id\": \"H\",\n      \"factible\": true,\n      \"tiempo\": \"15:38, 128 min fuera de turno\",\n      \"costo\": \"S/ 371.6\",\n      \"complejidad\": \"media\",\n      \"riesgo\": \"bajo\",\n      \"ventajas\": [\"Mejor puntaje (69.4)\", \"Costo más bajo\", \"Urgentes 6/6 a tiempo\"],\n      \"desventajas\": [\"13/19 a tiempo (63.2%)\", \"Carga cercana al límite en F1 (590/600 kg)\"]\n    }\n  ],\n  \"ranking\": [\"H\", \"A\", \"C\", \"B\"],\n  \"recomendacion\": \"La estrategia H ofrece el mejor balance costo‑puntualidad y mantiene bajo riesgo; es la opción recomendada para el día.\",\n  \"requiere_replanificacion\": false,\n  \"feedback_planificador\": \"\"\n}",
+      "datos": {
+        "evaluaciones": [
+          {
+            "id": "A",
+            "factible": true,
+            "tiempo": "15:25, 115 min fuera de turno",
+            "costo": "S/ 407.3",
+            "complejidad": "media",
+            "riesgo": "bajo",
+            "ventajas": [
+              "Costo razonable",
+              "13/19 a tiempo (68.4%)",
+              "Solo 4 vehículos"
+            ],
+            "desventajas": [
+              "Dos vueltas en F1 aumentan complejidad operativa",
+              "Algunas entregas tardan >200 min"
+            ]
+          },
+          {
+            "id": "B",
+            "factible": false,
+            "tiempo": "15:21, 111 min fuera de turno",
+            "costo": "S/ 410.8",
+            "complejidad": "media",
+            "riesgo": "alto",
+            "ventajas": [
+              "Mayor porcentaje de urgentes a tiempo (5/6)"
+            ],
+            "desventajas": [
+              "Violación: pedidos sin asignar (P18)",
+              "Caída puntualidad 10.6 pts bajo estrés"
+            ]
+          },
+          {
+            "id": "C",
+            "factible": true,
+            "tiempo": "15:50, 140 min fuera de turno",
+            "costo": "S/ 453.0",
+            "complejidad": "media",
+            "riesgo": "medio",
+            "ventajas": [
+              "Usa menos vehículos (4) y menos kilómetros que A",
+              "13/19 a tiempo (68.4%)"
+            ],
+            "desventajas": [
+              "Mayor costo y tardanzas muy altas (hasta +331 min)"
+            ]
+          },
+          {
+            "id": "H",
+            "factible": true,
+            "tiempo": "15:38, 128 min fuera de turno",
+            "costo": "S/ 371.6",
+            "complejidad": "media",
+            "riesgo": "bajo",
+            "ventajas": [
+              "Mejor puntaje (69.4)",
+              "Costo más bajo",
+              "Urgentes 6/6 a tiempo"
+            ],
+            "desventajas": [
+              "13/19 a tiempo (63.2%)",
+              "Carga cercana al límite en F1 (590/600 kg)"
+            ]
+          }
+        ],
+        "ranking": [
+          "H",
+          "A",
+          "C",
+          "B"
+        ],
+        "recomendacion": "La estrategia H ofrece el mejor balance costo‑puntualidad y mantiene bajo riesgo; es la opción recomendada para el día.",
+        "requiere_replanificacion": false,
+        "feedback_planificador": ""
+      },
+      "tools": [
+        {
+          "agente": "evaluador",
+          "ronda": 1,
+          "tool": "simular_estrategias",
+          "args": "{\"ids\":[\"A\",\"B\",\"C\",\"H\"]}",
+          "ok": true,
+          "resultado": {
+            "ok": true,
+            "objetivo_del_dia": "costo",
+            "pesos": {
+              "puntualidad": 0.15,
+              "urgentes": 0.15,
+              "tardanza": 0.1,
+              "costo": 0.45,
+              "tiempo": 0.15
+            },
+            "resultados": [
+              {
+                "id": "A",
+                "nombre": "Agrupación geográfica",
+                "factible": true,
+                "violaciones": [],
+                "costo_soles": 407.3,
+                "km": 176.1,
+                "hora_fin": "15:25",
+                "min_fuera_de_turno": 115,
+                "a_tiempo": "13/19",
+                "pct_a_tiempo": 68.4,
+                "urgentes_a_tiempo": "4/6",
+                "min_tarde_total": 705,
+                "tardes": [
+                  "P08 +222min",
+                  "P11 +187min",
+                  "P16 +112min",
+                  "P12 +85min",
+                  "P01 +59min"
+                ],
+                "vehiculos": [
+                  "M1: sale 08:16, 1 vuelta(s), 1 paradas, 20/30 kg, regreso 08:50",
+                  "M2: sale 07:47, 1 vuelta(s), 1 paradas, 20/30 kg, regreso 08:19",
+                  "F1: sale 08:14, 2 vuelta(s), 11 paradas, 537/600 kg, regreso 15:25",
+                  "V1: sale 07:57, 1 vuelta(s), 6 paradas, 270/400 kg, regreso 12:37"
+                ],
+                "puntaje": 61.6,
+                "estres_trafico_+30%": {
+                  "pct_a_tiempo": "68.4 → 63.2",
+                  "urgentes": "4/6 → 4/6",
+                  "caida_puntualidad_pts": 5.2
+                }
+              },
+              {
+                "id": "B",
+                "nombre": "Protección de ventanas críticas",
+                "factible": false,
+                "violaciones": [
+                  "pedidos sin asignar: P18"
+                ],
+                "costo_soles": 410.8,
+                "km": 181.4,
+                "hora_fin": "15:21",
+                "min_fuera_de_turno": 111,
+                "a_tiempo": "12/19",
+                "pct_a_tiempo": 63.2,
+                "urgentes_a_tiempo": "5/6",
+                "min_tarde_total": 739,
+                "tardes": [
+                  "P01 +219min",
+                  "P06 +193min",
+                  "P11 +185min",
+                  "P12 +83min",
+                  "P08 +34min"
+                ],
+                "vehiculos": [
+                  "M1: sale 08:16, 1 vuelta(s), 1 paradas, 20/30 kg, regreso 08:50",
+                  "M2: sale 07:47, 1 vuelta(s), 1 paradas, 20/30 kg, regreso 08:19",
+                  "F1: sale 08:14, 2 vuelta(s), 10 paradas, 572/600 kg, regreso 15:21",
+                  "V1: sale 07:57, 1 vuelta(s), 6 paradas, 270/400 kg, regreso 12:37"
+                ],
+                "puntaje": 31.5,
+                "estres_trafico_+30%": {
+                  "pct_a_tiempo": "63.2 → 52.6",
+                  "urgentes": "5/6 → 4/6",
+                  "caida_puntualidad_pts": 10.6
+                }
+              },
+              {
+                "id": "C",
+                "nombre": "Consolidación mínima",
+                "factible": true,
+                "violaciones": [],
+                "costo_soles": 453.0,
+                "km": 206.4,
+                "hora_fin": "15:50",
+                "min_fuera_de_turno": 140,
+                "a_tiempo": "13/19",
+                "pct_a_tiempo": 68.4,
+                "urgentes_a_tiempo": "4/6",
+                "min_tarde_total": 1093,
+                "tardes": [
+                  "P16 +331min",
+                  "P11 +297min",
+                  "P01 +236min",
+                  "P12 +100min",
+                  "P08 +82min"
+                ],
+                "vehiculos": [
+                  "M1: sale 08:16, 1 vuelta(s), 1 paradas, 20/30 kg, regreso 08:50",
+                  "M2: sale 07:47, 1 vuelta(s), 1 paradas, 20/30 kg, regreso 08:19",
+                  "F1: sale 07:30, 2 vuelta(s), 11 paradas, 537/600 kg, regreso 15:50",
+                  "V1: sale 08:39, 1 vuelta(s), 6 paradas, 270/400 kg, regreso 12:32"
+                ],
+                "puntaje": 56.6,
+                "estres_trafico_+30%": {
+                  "pct_a_tiempo": "68.4 → 52.6",
+                  "urgentes": "4/6 → 4/6",
+                  "caida_puntualidad_pts": 15.8
+                }
+              },
+              {
+                "id": "H",
+                "nombre": "Línea base: heurística voraz sin LLM",
+                "factible": true,
+                "violaciones": [],
+                "costo_soles": 371.6,
+                "km": 148.6,
+                "hora_fin": "15:38",
+                "min_fuera_de_turno": 128,
+                "a_tiempo": "12/19",
+                "pct_a_tiempo": 63.2,
+                "urgentes_a_tiempo": "6/6",
+                "min_tarde_total": 708,
+                "tardes": [
+                  "P12 +157min",
+                  "P10 +154min",
+                  "P06 +112min",
+                  "P02 +106min",
+                  "P04 +87min"
+                ],
+                "vehiculos": [
+                  "F1: sale 08:10, 2 vuelta(s), 13 paradas, 590/600 kg, regreso 15:38",
+                  "V1: sale 07:57, 1 vuelta(s), 5 paradas, 230/400 kg, regreso 11:13",
+                  "M1: sale 08:48, 1 vuelta(s), 1 paradas, 12/30 kg, regreso 09:18"
+                ],
+                "puntaje": 69.4,
+                "estres_trafico_+30%": {
+                  "pct_a_tiempo": "63.2 → 52.6",
+                  "urgentes": "6/6 → 5/6",
+                  "caida_puntualidad_pts": 10.6
+                }
+              }
+            ],
+            "ranking_numerico": [
+              "H (69.4)",
+              "A (61.6)",
+              "C (56.6)",
+              "B (31.5)"
+            ],
+            "nota": "puntaje 0-100 ponderado por el objetivo; si una estrategia no es factible su puntaje se multiplica por 0.5. H es la línea base calculada por código (sin LLM)."
+          }
+        }
+      ]
+    },
+    {
+      "agente": "decisor",
+      "modelo": "openai/gpt-oss-120b",
+      "segundos": 2.5,
+      "tokens": 3444,
+      "texto": "{\n  \"estrategia_elegida\": \"H\",\n  \"resumen\": \"Se selecciona la estrategia H (línea base voraz) porque obtiene el mayor puntaje (69.4), el costo más bajo (S/ 371.6) y cumple con todos los criterios de puntualidad y urgentes dentro de los pesos del objetivo. Aunque la capacidad total supera el límite por vuelta, la estrategia sigue siendo factible y el riesgo global es bajo; sin embargo, se requiere autorización para añadir capacidad adicional.\",\n  \"por_que\": [\n    \"Mayor puntaje (69.4) frente a A (61.6), C (56.6) y B (31.5).\",\n    \"Costo más bajo (S/ 371.6) que satisface el peso del 45% en el objetivo.\",\n    \"Urgentes 6/6 a tiempo, cumpliendo el peso del 15% de urgentes.\",\n    \"Riesgo bajo según el analista y la tabla de KPIs.\"\n  ],\n  \"criterios_que_pesaron\": [\n    {\n      \"criterio\": \"puntaje\",\n      \"importancia\": \"alta\",\n      \"evidencia\": \"H puntaje 69.4, superior a A 61.6, C 56.6, B 31.5\"\n    },\n    {\n      \"criterio\": \"costo\",\n      \"importancia\": \"alta\",\n      \"evidencia\": \"H costo S/ 371.6, menor que A S/ 407.3, C S/ 453.0, B S/ 410.8\"\n    },\n    {\n      \"criterio\": \"urgentes a tiempo\",\n      \"importancia\": \"alta\",\n      \"evidencia\": \"H 6/6 urgentes a tiempo vs A 4/6, C 4/6, B 5/6\"\n    },\n    {\n      \"criterio\": \"riesgo\",\n      \"importancia\": \"media\",\n      \"evidencia\": \"Analista indica riesgo bajo para H; B tiene riesgo alto\"\n    }\n  ],\n  \"desviacion_del_ranking\": \"ninguna\",\n  \"trade_offs\": [\n    \"Capacidad total (1312 kg) supera el límite por vuelta (1060 kg), requiriendo segunda vuelta o vehículo extra.\",\n    \"Carga de F1 cercana al límite (590 kg de 600 kg), sin margen amplio.\"\n  ],\n  \"riesgos\": [\n    {\n      \"riesgo\": \"Sobrecarga de capacidad en la primera vuelta (1312 kg > 1060 kg)\",\n      \"mitigacion\": \"Programar segunda vuelta para los pedidos restantes o contratar una moto/vehículo adicional antes de iniciar\"\n    },\n    {\n      \"riesgo\": \"Limitación de refrigeración (967 kg > 660 kg capacidad con frío)\",\n      \"mitigacion\": \"Asignar los pedidos refrigerados a los vehículos con cámara fría y, si falta capacidad, usar unidad de frío externa bajo contrato\"\n    },\n    {\n      \"riesgo\": \"Carga de F1 cerca del límite de peso (590 kg/600 kg)\",\n      \"mitigacion\": \"Revisar distribución de pedidos y mover carga ligera a M1 o M2 para equilibrar\"\n    }\n  ],\n  \"revisar_antes_de_aplicar\": [\n    \"Verificar peso total asignado a cada vehículo (especialmente F1) contra su capacidad máxima.\",\n    \"Confirmar que los pedidos refrigerados caben en la capacidad de frío disponible.\",\n    \"Comprobar que no haya pedidos sin asignar (ej. P18) en la planificación actual.\"\n  ],\n  \"confianza\": \"alta\",\n  \"escalar_a_humano\": true\n}",
+      "datos": {
+        "estrategia_elegida": "H",
+        "resumen": "Se selecciona la estrategia H (línea base voraz) porque obtiene el mayor puntaje (69.4), el costo más bajo (S/ 371.6) y cumple con todos los criterios de puntualidad y urgentes dentro de los pesos del objetivo. Aunque la capacidad total supera el límite por vuelta, la estrategia sigue siendo factible y el riesgo global es bajo; sin embargo, se requiere autorización para añadir capacidad adicional.",
+        "por_que": [
+          "Mayor puntaje (69.4) frente a A (61.6), C (56.6) y B (31.5).",
+          "Costo más bajo (S/ 371.6) que satisface el peso del 45% en el objetivo.",
+          "Urgentes 6/6 a tiempo, cumpliendo el peso del 15% de urgentes.",
+          "Riesgo bajo según el analista y la tabla de KPIs."
+        ],
+        "criterios_que_pesaron": [
+          {
+            "criterio": "puntaje",
+            "importancia": "alta",
+            "evidencia": "H puntaje 69.4, superior a A 61.6, C 56.6, B 31.5"
+          },
+          {
+            "criterio": "costo",
+            "importancia": "alta",
+            "evidencia": "H costo S/ 371.6, menor que A S/ 407.3, C S/ 453.0, B S/ 410.8"
+          },
+          {
+            "criterio": "urgentes a tiempo",
+            "importancia": "alta",
+            "evidencia": "H 6/6 urgentes a tiempo vs A 4/6, C 4/6, B 5/6"
+          },
+          {
+            "criterio": "riesgo",
+            "importancia": "media",
+            "evidencia": "Analista indica riesgo bajo para H; B tiene riesgo alto"
+          }
+        ],
+        "desviacion_del_ranking": "ninguna",
+        "trade_offs": [
+          "Capacidad total (1312 kg) supera el límite por vuelta (1060 kg), requiriendo segunda vuelta o vehículo extra.",
+          "Carga de F1 cercana al límite (590 kg de 600 kg), sin margen amplio."
+        ],
+        "riesgos": [
+          {
+            "riesgo": "Sobrecarga de capacidad en la primera vuelta (1312 kg > 1060 kg)",
+            "mitigacion": "Programar segunda vuelta para los pedidos restantes o contratar una moto/vehículo adicional antes de iniciar"
+          },
+          {
+            "riesgo": "Limitación de refrigeración (967 kg > 660 kg capacidad con frío)",
+            "mitigacion": "Asignar los pedidos refrigerados a los vehículos con cámara fría y, si falta capacidad, usar unidad de frío externa bajo contrato"
+          },
+          {
+            "riesgo": "Carga de F1 cerca del límite de peso (590 kg/600 kg)",
+            "mitigacion": "Revisar distribución de pedidos y mover carga ligera a M1 o M2 para equilibrar"
+          }
+        ],
+        "revisar_antes_de_aplicar": [
+          "Verificar peso total asignado a cada vehículo (especialmente F1) contra su capacidad máxima.",
+          "Confirmar que los pedidos refrigerados caben en la capacidad de frío disponible.",
+          "Comprobar que no haya pedidos sin asignar (ej. P18) en la planificación actual."
+        ],
+        "confianza": "alta",
+        "escalar_a_humano": true
+      },
+      "tools": []
+    }
+  ],
+  "estrategias": {
+    "A": {
+      "id": "A",
+      "nombre": "Agrupación geográfica",
+      "logica": "Cada vehículo cubre una zona contigua para minimizar kilómetros.",
+      "secuencia": "cercania",
+      "rutas": [
+        {
+          "vehiculo": "M1",
+          "paradas": [
+            "P19"
+          ]
+        },
+        {
+          "vehiculo": "M2",
+          "paradas": [
+            "P09"
+          ]
+        },
+        {
+          "vehiculo": "F1",
+          "paradas": [
+            "Jesús María",
+            "La Victoria",
+            "Lince",
+            "San Isidro",
+            "P04"
+          ]
+        },
+        {
+          "vehiculo": "F1",
+          "paradas": [
+            "P06",
+            "P08",
+            "P12",
+            "P01",
+            "P11",
+            "P16"
+          ]
+        },
+        {
+          "vehiculo": "V1",
+          "paradas": [
+            "Barranco",
+            "La Molina",
+            "Pueblo Libre",
+            "San Borja",
+            "Surquillo",
+            "P14"
+          ]
+        }
+      ],
+      "por_que_podria_ganar": "Reduce kilómetros al mantener cada vehículo dentro de una zona compacta, lo que disminuye consumo de combustible y tiempo de desplazamiento.",
+      "riesgo_principal": "Si el tráfico en una zona se vuelve inesperadamente muy denso, la entrega de toda la zona puede retrasarse."
+    },
+    "B": {
+      "id": "B",
+      "nombre": "Protección de ventanas críticas",
+      "logica": "Se atienden primero los pedidos urgentes y con ventana de cierre antes de las 10:00.",
+      "secuencia": "urgentes_primero",
+      "rutas": [
+        {
+          "vehiculo": "M1",
+          "paradas": [
+            "P19"
+          ]
+        },
+        {
+          "vehiculo": "M2",
+          "paradas": [
+            "P09"
+          ]
+        },
+        {
+          "vehiculo": "F1",
+          "paradas": [
+            "P07",
+            "P16",
+            "P03",
+            "P15",
+            "P08",
+            "P04"
+          ]
+        },
+        {
+          "vehiculo": "F1",
+          "paradas": [
+            "P06",
+            "P01",
+            "P11",
+            "P12"
+          ]
+        },
+        {
+          "vehiculo": "V1",
+          "paradas": [
+            "Barranco",
+            "La Molina",
+            "Pueblo Libre",
+            "San Borja",
+            "Surquillo",
+            "P14"
+          ]
+        }
+      ],
+      "por_que_podria_ganar": "Garantiza que los pedidos con ventanas tempranas y urgentes se entreguen dentro del plazo, evitando penalizaciones por retraso.",
+      "riesgo_principal": "Al priorizar urgentes, se pueden cargar más peso en la primera vuelta de la furgoneta, acercándose al límite de capacidad."
+    },
+    "C": {
+      "id": "C",
+      "nombre": "Consolidación mínima",
+      "logica": "Se busca usar la menor cantidad de vehículos y vueltas cumpliendo todas las reglas.",
+      "secuencia": "tal_cual",
+      "rutas": [
+        {
+          "vehiculo": "M1",
+          "paradas": [
+            "P19"
+          ]
+        },
+        {
+          "vehiculo": "M2",
+          "paradas": [
+            "P09"
+          ]
+        },
+        {
+          "vehiculo": "F1",
+          "paradas": [
+            "Jesús María",
+            "La Victoria",
+            "Lince",
+            "San Isidro",
+            "P04"
+          ]
+        },
+        {
+          "vehiculo": "F1",
+          "paradas": [
+            "P06",
+            "P08",
+            "P12",
+            "P01",
+            "P11",
+            "P16"
+          ]
+        },
+        {
+          "vehiculo": "V1",
+          "paradas": [
+            "Barranco",
+            "La Molina",
+            "Pueblo Libre",
+            "San Borja",
+            "Surquillo",
+            "P14"
+          ]
+        }
+      ],
+      "por_que_podria_ganar": "Utiliza exactamente los recursos disponibles (una furgoneta en dos vueltas, una van en una vuelta y dos motos), minimizando costos operativos.",
+      "riesgo_principal": "Cualquier falla o retraso en la furgoneta obliga a reprogramar ambas vueltas, impactando a gran parte de los pedidos."
+    },
+    "H": {
+      "id": "H",
+      "nombre": "Línea base: heurística voraz sin LLM",
+      "logica": "urgentes primero, vehículo compatible más cercano",
+      "secuencia": "tal_cual",
+      "rutas": [
+        {
+          "vehiculo": "F1",
+          "paradas": [
+            "P19",
+            "P09",
+            "P03",
+            "P07",
+            "P11",
+            "P01",
+            "P15"
+          ]
+        },
+        {
+          "vehiculo": "V1",
+          "paradas": [
+            "P13",
+            "P18",
+            "P05",
+            "P17",
+            "P14"
+          ]
+        },
+        {
+          "vehiculo": "M1",
+          "paradas": [
+            "P16"
+          ]
+        },
+        {
+          "vehiculo": "F1",
+          "paradas": [
+            "P08",
+            "P04",
+            "P06",
+            "P02",
+            "P12",
+            "P10"
+          ]
+        }
+      ],
+      "por_que_podria_ganar": "Regla simple y transparente que prioriza urgentes y ventanas tempranas.",
+      "riesgo_principal": "No agrupa zonas ni optimiza costo: suele usar todos los vehículos."
+    }
+  },
+  "simulaciones": {
+    "A": {
+      "id": "A",
+      "nombre": "Agrupación geográfica",
+      "factible": true,
+      "violaciones": [],
+      "avisos": [],
+      "costo_soles": 407.3,
+      "km": 176.1,
+      "hora_fin": "15:25",
+      "duracion_min": 475,
+      "min_fuera_de_turno": 115,
+      "a_tiempo": "13/19",
+      "pct_a_tiempo": 68.4,
+      "urgentes_a_tiempo": "4/6",
+      "pct_urgentes": 66.7,
+      "min_tarde_total": 705,
+      "tardes": [
+        "P08 +222min",
+        "P11 +187min",
+        "P16 +112min",
+        "P12 +85min",
+        "P01 +59min",
+        "P06 +40min"
+      ],
+      "vehiculos": [
+        {
+          "veh": "M1",
+          "tipo": "moto",
+          "vueltas": 1,
+          "paradas": 1,
+          "kg_max": 20.0,
+          "cap": 30,
+          "sale": "08:16",
+          "regreso": "08:50"
+        },
+        {
+          "veh": "M2",
+          "tipo": "moto",
+          "vueltas": 1,
+          "paradas": 1,
+          "kg_max": 20.0,
+          "cap": 30,
+          "sale": "07:47",
+          "regreso": "08:19"
+        },
+        {
+          "veh": "F1",
+          "tipo": "furgoneta_refrigerada",
+          "vueltas": 2,
+          "paradas": 11,
+          "kg_max": 537.0,
+          "cap": 600,
+          "sale": "08:14",
+          "regreso": "15:25"
+        },
+        {
+          "veh": "V1",
+          "tipo": "van",
+          "vueltas": 1,
+          "paradas": 6,
+          "kg_max": 270.0,
+          "cap": 400,
+          "sale": "07:57",
+          "regreso": "12:37"
+        }
+      ],
+      "puntaje": 61.6
+    },
+    "B": {
+      "id": "B",
+      "nombre": "Protección de ventanas críticas",
+      "factible": false,
+      "violaciones": [
+        "pedidos sin asignar: P18"
+      ],
+      "avisos": [],
+      "costo_soles": 410.8,
+      "km": 181.4,
+      "hora_fin": "15:21",
+      "duracion_min": 471,
+      "min_fuera_de_turno": 111,
+      "a_tiempo": "12/19",
+      "pct_a_tiempo": 63.2,
+      "urgentes_a_tiempo": "5/6",
+      "pct_urgentes": 83.3,
+      "min_tarde_total": 739,
+      "tardes": [
+        "P01 +219min",
+        "P06 +193min",
+        "P11 +185min",
+        "P12 +83min",
+        "P08 +34min",
+        "P15 +25min"
+      ],
+      "vehiculos": [
+        {
+          "veh": "M1",
+          "tipo": "moto",
+          "vueltas": 1,
+          "paradas": 1,
+          "kg_max": 20.0,
+          "cap": 30,
+          "sale": "08:16",
+          "regreso": "08:50"
+        },
+        {
+          "veh": "M2",
+          "tipo": "moto",
+          "vueltas": 1,
+          "paradas": 1,
+          "kg_max": 20.0,
+          "cap": 30,
+          "sale": "07:47",
+          "regreso": "08:19"
+        },
+        {
+          "veh": "F1",
+          "tipo": "furgoneta_refrigerada",
+          "vueltas": 2,
+          "paradas": 10,
+          "kg_max": 572.0,
+          "cap": 600,
+          "sale": "08:14",
+          "regreso": "15:21"
+        },
+        {
+          "veh": "V1",
+          "tipo": "van",
+          "vueltas": 1,
+          "paradas": 6,
+          "kg_max": 270.0,
+          "cap": 400,
+          "sale": "07:57",
+          "regreso": "12:37"
+        }
+      ],
+      "puntaje": 31.5
+    },
+    "C": {
+      "id": "C",
+      "nombre": "Consolidación mínima",
+      "factible": true,
+      "violaciones": [],
+      "avisos": [],
+      "costo_soles": 453.0,
+      "km": 206.4,
+      "hora_fin": "15:50",
+      "duracion_min": 500,
+      "min_fuera_de_turno": 140,
+      "a_tiempo": "13/19",
+      "pct_a_tiempo": 68.4,
+      "urgentes_a_tiempo": "4/6",
+      "pct_urgentes": 66.7,
+      "min_tarde_total": 1093,
+      "tardes": [
+        "P16 +331min",
+        "P11 +297min",
+        "P01 +236min",
+        "P12 +100min",
+        "P08 +82min",
+        "P13 +47min"
+      ],
+      "vehiculos": [
+        {
+          "veh": "M1",
+          "tipo": "moto",
+          "vueltas": 1,
+          "paradas": 1,
+          "kg_max": 20.0,
+          "cap": 30,
+          "sale": "08:16",
+          "regreso": "08:50"
+        },
+        {
+          "veh": "M2",
+          "tipo": "moto",
+          "vueltas": 1,
+          "paradas": 1,
+          "kg_max": 20.0,
+          "cap": 30,
+          "sale": "07:47",
+          "regreso": "08:19"
+        },
+        {
+          "veh": "F1",
+          "tipo": "furgoneta_refrigerada",
+          "vueltas": 2,
+          "paradas": 11,
+          "kg_max": 537.0,
+          "cap": 600,
+          "sale": "07:30",
+          "regreso": "15:50"
+        },
+        {
+          "veh": "V1",
+          "tipo": "van",
+          "vueltas": 1,
+          "paradas": 6,
+          "kg_max": 270.0,
+          "cap": 400,
+          "sale": "08:39",
+          "regreso": "12:32"
+        }
+      ],
+      "puntaje": 56.6
+    },
+    "H": {
+      "id": "H",
+      "nombre": "Línea base: heurística voraz sin LLM",
+      "factible": true,
+      "violaciones": [],
+      "avisos": [],
+      "costo_soles": 371.6,
+      "km": 148.6,
+      "hora_fin": "15:38",
+      "duracion_min": 488,
+      "min_fuera_de_turno": 128,
+      "a_tiempo": "12/19",
+      "pct_a_tiempo": 63.2,
+      "urgentes_a_tiempo": "6/6",
+      "pct_urgentes": 100.0,
+      "min_tarde_total": 708,
+      "tardes": [
+        "P12 +157min",
+        "P10 +154min",
+        "P06 +112min",
+        "P02 +106min",
+        "P04 +87min",
+        "P08 +69min",
+        "P15 +23min"
+      ],
+      "vehiculos": [
+        {
+          "veh": "F1",
+          "tipo": "furgoneta_refrigerada",
+          "vueltas": 2,
+          "paradas": 13,
+          "kg_max": 590.0,
+          "cap": 600,
+          "sale": "08:10",
+          "regreso": "15:38"
+        },
+        {
+          "veh": "V1",
+          "tipo": "van",
+          "vueltas": 1,
+          "paradas": 5,
+          "kg_max": 230.0,
+          "cap": 400,
+          "sale": "07:57",
+          "regreso": "11:13"
+        },
+        {
+          "veh": "M1",
+          "tipo": "moto",
+          "vueltas": 1,
+          "paradas": 1,
+          "kg_max": 12.0,
+          "cap": 30,
+          "sale": "08:48",
+          "regreso": "09:18"
+        }
+      ],
+      "puntaje": 69.4
+    }
+  },
+  "estres": {
+    "A": {
+      "estrategia": "A",
+      "factor_trafico": 1.3,
+      "pct_a_tiempo": "68.4 → 63.2",
+      "urgentes_a_tiempo": "4/6 → 4/6",
+      "hora_fin": "15:25 → 16:37",
+      "min_tarde_total": "705 → 983",
+      "caida_puntualidad_pts": 5.2,
+      "nuevas_violaciones": []
+    },
+    "B": {
+      "estrategia": "B",
+      "factor_trafico": 1.3,
+      "pct_a_tiempo": "63.2 → 52.6",
+      "urgentes_a_tiempo": "5/6 → 4/6",
+      "hora_fin": "15:21 → 16:43",
+      "min_tarde_total": "739 → 1113",
+      "caida_puntualidad_pts": 10.6,
+      "nuevas_violaciones": []
+    },
+    "C": {
+      "estrategia": "C",
+      "factor_trafico": 1.3,
+      "pct_a_tiempo": "68.4 → 52.6",
+      "urgentes_a_tiempo": "4/6 → 4/6",
+      "hora_fin": "15:50 → 17:34",
+      "min_tarde_total": "1093 → 1582",
+      "caida_puntualidad_pts": 15.8,
+      "nuevas_violaciones": []
+    },
+    "H": {
+      "estrategia": "H",
+      "factor_trafico": 1.3,
+      "pct_a_tiempo": "63.2 → 52.6",
+      "urgentes_a_tiempo": "6/6 → 5/6",
+      "hora_fin": "15:38 → 16:49",
+      "min_tarde_total": "708 → 1034",
+      "caida_puntualidad_pts": 10.6,
+      "nuevas_violaciones": []
+    }
+  },
+  "historial_estrategias": [
+    {
+      "estrategias": {
+        "A": {
+          "id": "A",
+          "nombre": "Agrupación geográfica",
+          "logica": "Cada vehículo cubre una zona contigua para minimizar kilómetros recorridos.",
+          "secuencia": "cercania",
+          "rutas": [
+            {
+              "vehiculo": "M1",
+              "paradas": [
+                "P19"
+              ]
+            },
+            {
+              "vehiculo": "M2",
+              "paradas": [
+                "P09"
+              ]
+            },
+            {
+              "vehiculo": "F1",
+              "paradas": [
+                "P08",
+                "P15",
+                "P04",
+                "P12",
+                "P16"
+              ]
+            },
+            {
+              "vehiculo": "F1",
+              "paradas": [
+                "Miraflores",
+                "Chorrillos",
+                "Jesús María",
+                "P03"
+              ]
+            },
+            {
+              "vehiculo": "V1",
+              "paradas": [
+                "La Molina",
+                "Barranco",
+                "Pueblo Libre",
+                "San Borja",
+                "Surquillo",
+                "Santiago",
+                "San Isidro"
+              ]
+            }
+          ],
+          "por_que_podria_ganar": "Reduce kilómetros al agrupar por proximidad, aprovechando la congestión en Jesús María solo para una única furgoneta que lleva ese distrito.",
+          "riesgo_principal": "Posible sobrecarga en la segunda vuelta de la furgoneta si el tiempo de carga/re‑carga se extiende."
+        },
+        "B": {
+          "id": "B",
+          "nombre": "Protección de ventanas críticas",
+          "logica": "Se atienden primero los pedidos urgentes y los que cierran antes de las 10:00, aunque implique usar más vueltas.",
+          "secuencia": "ventana",
+          "rutas": [
+            {
+              "vehiculo": "M1",
+              "paradas": [
+                "P19"
+              ]
+            },
+            {
+              "vehiculo": "M2",
+              "paradas": [
+                "P09"
+              ]
+            },
+            {
+              "vehiculo": "F1",
+              "paradas": [
+                "P16",
+                "P07",
+                "P03",
+                "P08",
+                "P15"
+              ]
+            },
+            {
+              "vehiculo": "F1",
+              "paradas": [
+                "Miraflores",
+                "Chorrillos",
+                "P04",
+                "P12"
+              ]
+            },
+            {
+              "vehiculo": "V1",
+              "paradas": [
+                "Barranco",
+                "Pueblo Libre",
+                "San Borja",
+                "Surquillo",
+                "La Molina",
+                "Santiago",
+                "San Isidro"
+              ]
+            }
+          ],
+          "por_que_podria_ganar": "Garantiza la entrega dentro de las ventanas críticas, evitando penalizaciones por retrasos en pedidos urgentes.",
+          "riesgo_principal": "Mayor número de vueltas de la furgoneta aumenta el tiempo total y el consumo de combustible."
+        },
+        "C": {
+          "id": "C",
+          "nombre": "Consolidación mínima de recursos",
+          "logica": "Se busca usar la menor cantidad de vehículos y vueltas posible respetando todas las reglas.",
+          "secuencia": "tal_cual",
+          "rutas": [
+            {
+              "vehiculo": "F1",
+              "paradas": [
+                "P08",
+                "P15",
+                "P04",
+                "P12",
+                "P16",
+                "P03",
+                "Miraflores",
+                "Chorrillos",
+                "Jesús María"
+              ]
+            },
+            {
+              "vehiculo": "V1",
+              "paradas": [
+                "La Molina",
+                "Barranco",
+                "Pueblo Libre",
+                "San Borja",
+                "Surquillo",
+                "Santiago",
+                "San Isidro"
+              ]
+            }
+          ],
+          "por_que_podria_ganar": "Utiliza solo la furgoneta y la van, evitando el uso de motos y reduciendo costos de combustible y tiempo de carga.",
+          "riesgo_principal": "Al concentrar todo el refrigerado en una sola furgoneta, cualquier retraso o problema mecánico afecta a la mayoría de los pedidos."
+        },
+        "H": {
+          "id": "H",
+          "nombre": "Línea base: heurística voraz sin LLM",
+          "logica": "urgentes primero, vehículo compatible más cercano",
+          "secuencia": "tal_cual",
+          "rutas": [
+            {
+              "vehiculo": "F1",
+              "paradas": [
+                "P19",
+                "P09",
+                "P03",
+                "P07",
+                "P11",
+                "P01",
+                "P15"
+              ]
+            },
+            {
+              "vehiculo": "V1",
+              "paradas": [
+                "P13",
+                "P18",
+                "P05",
+                "P17",
+                "P14"
+              ]
+            },
+            {
+              "vehiculo": "M1",
+              "paradas": [
+                "P16"
+              ]
+            },
+            {
+              "vehiculo": "F1",
+              "paradas": [
+                "P08",
+                "P04",
+                "P06",
+                "P02",
+                "P12",
+                "P10"
+              ]
+            }
+          ],
+          "por_que_podria_ganar": "Regla simple y transparente que prioriza urgentes y ventanas tempranas.",
+          "riesgo_principal": "No agrupa zonas ni optimiza costo: suele usar todos los vehículos."
+        }
+      },
+      "simulaciones": {
+        "A": {
+          "id": "A",
+          "nombre": "Agrupación geográfica",
+          "factible": false,
+          "violaciones": [
+            "parada 'Santiago' no es un pedido ni un distrito válido",
+            "pedidos sin asignar: P11, P14"
+          ],
+          "avisos": [],
+          "costo_soles": 399.6,
+          "km": 180.5,
+          "hora_fin": "15:48",
+          "duracion_min": 498,
+          "min_fuera_de_turno": 138,
+          "a_tiempo": "12/19",
+          "pct_a_tiempo": 63.2,
+          "urgentes_a_tiempo": "3/6",
+          "pct_urgentes": 50.0,
+          "min_tarde_total": 889,
+          "tardes": [
+            "P07 +258min",
+            "P03 +227min",
+            "P06 +221min",
+            "P01 +177min",
+            "P12 +6min"
+          ],
+          "vehiculos": [
+            {
+              "veh": "M1",
+              "tipo": "moto",
+              "vueltas": 1,
+              "paradas": 1,
+              "kg_max": 20.0,
+              "cap": 30,
+              "sale": "08:16",
+              "regreso": "08:50"
+            },
+            {
+              "veh": "M2",
+              "tipo": "moto",
+              "vueltas": 1,
+              "paradas": 1,
+              "kg_max": 20.0,
+              "cap": 30,
+              "sale": "07:47",
+              "regreso": "08:19"
+            },
+            {
+              "veh": "F1",
+              "tipo": "furgoneta_refrigerada",
+              "vueltas": 2,
+              "paradas": 9,
+              "kg_max": 467.0,
+              "cap": 600,
+              "sale": "08:42",
+              "regreso": "15:48"
+            },
+            {
+              "veh": "V1",
+              "tipo": "van",
+              "vueltas": 1,
+              "paradas": 6,
+              "kg_max": 280.0,
+              "cap": 400,
+              "sale": "07:57",
+              "regreso": "11:40"
+            }
+          ],
+          "puntaje": 28.7
+        },
+        "B": {
+          "id": "B",
+          "nombre": "Protección de ventanas críticas",
+          "factible": false,
+          "violaciones": [
+            "parada 'Santiago' no es un pedido ni un distrito válido",
+            "pedidos sin asignar: P11, P14"
+          ],
+          "avisos": [],
+          "costo_soles": 412.2,
+          "km": 189.0,
+          "hora_fin": "14:47",
+          "duracion_min": 437,
+          "min_fuera_de_turno": 77,
+          "a_tiempo": "13/19",
+          "pct_a_tiempo": 68.4,
+          "urgentes_a_tiempo": "5/6",
+          "pct_urgentes": 83.3,
+          "min_tarde_total": 334,
+          "tardes": [
+            "P12 +117min",
+            "P01 +83min",
+            "P06 +79min",
+            "P04 +55min"
+          ],
+          "vehiculos": [
+            {
+              "veh": "M1",
+              "tipo": "moto",
+              "vueltas": 1,
+              "paradas": 1,
+              "kg_max": 20.0,
+              "cap": 30,
+              "sale": "08:16",
+              "regreso": "08:50"
+            },
+            {
+              "veh": "M2",
+              "tipo": "moto",
+              "vueltas": 1,
+              "paradas": 1,
+              "kg_max": 20.0,
+              "cap": 30,
+              "sale": "07:47",
+              "regreso": "08:19"
+            },
+            {
+              "veh": "F1",
+              "tipo": "furgoneta_refrigerada",
+              "vueltas": 2,
+              "paradas": 9,
+              "kg_max": 477.0,
+              "cap": 600,
+              "sale": "07:30",
+              "regreso": "14:47"
+            },
+            {
+              "veh": "V1",
+              "tipo": "van",
+              "vueltas": 1,
+              "paradas": 6,
+              "kg_max": 280.0,
+              "cap": 400,
+              "sale": "07:57",
+              "regreso": "12:29"
+            }
+          ],
+          "puntaje": 32.1
+        },
+        "C": {
+          "id": "C",
+          "nombre": "Consolidación mínima de recursos",
+          "factible": false,
+          "violaciones": [
+            "parada 'Santiago' no es un pedido ni un distrito válido",
+            "pedidos sin asignar: P09, P11, P14, P19",
+            "F1 vuelta 1: 932 kg > capacidad 600 kg"
+          ],
+          "avisos": [],
+          "costo_soles": 400.7,
+          "km": 174.2,
+          "hora_fin": "15:41",
+          "duracion_min": 491,
+          "min_fuera_de_turno": 131,
+          "a_tiempo": "7/19",
+          "pct_a_tiempo": 36.8,
+          "urgentes_a_tiempo": "0/6",
+          "pct_urgentes": 0.0,
+          "min_tarde_total": 1085,
+          "tardes": [
+            "P07 +307min",
+            "P03 +171min",
+            "P01 +164min",
+            "P16 +145min",
+            "P06 +141min",
+            "P13 +80min",
+            "P18 +72min",
+            "P05 +5min"
+          ],
+          "vehiculos": [
+            {
+              "veh": "F1",
+              "tipo": "furgoneta_refrigerada",
+              "vueltas": 1,
+              "paradas": 9,
+              "kg_max": 932.0,
+              "cap": 600,
+              "sale": "08:23",
+              "regreso": "15:41"
+            },
+            {
+              "veh": "V1",
+              "tipo": "van",
+              "vueltas": 1,
+              "paradas": 6,
+              "kg_max": 280.0,
+              "cap": 400,
+              "sale": "09:21",
+              "regreso": "13:07"
+            }
+          ],
+          "puntaje": 22.9
+        },
+        "H": {
+          "id": "H",
+          "nombre": "Línea base: heurística voraz sin LLM",
+          "factible": true,
+          "violaciones": [],
+          "avisos": [],
+          "costo_soles": 371.6,
+          "km": 148.6,
+          "hora_fin": "15:38",
+          "duracion_min": 488,
+          "min_fuera_de_turno": 128,
+          "a_tiempo": "12/19",
+          "pct_a_tiempo": 63.2,
+          "urgentes_a_tiempo": "6/6",
+          "pct_urgentes": 100.0,
+          "min_tarde_total": 708,
+          "tardes": [
+            "P12 +157min",
+            "P10 +154min",
+            "P06 +112min",
+            "P02 +106min",
+            "P04 +87min",
+            "P08 +69min",
+            "P15 +23min"
+          ],
+          "vehiculos": [
+            {
+              "veh": "F1",
+              "tipo": "furgoneta_refrigerada",
+              "vueltas": 2,
+              "paradas": 13,
+              "kg_max": 590.0,
+              "cap": 600,
+              "sale": "08:10",
+              "regreso": "15:38"
+            },
+            {
+              "veh": "V1",
+              "tipo": "van",
+              "vueltas": 1,
+              "paradas": 5,
+              "kg_max": 230.0,
+              "cap": 400,
+              "sale": "07:57",
+              "regreso": "11:13"
+            },
+            {
+              "veh": "M1",
+              "tipo": "moto",
+              "vueltas": 1,
+              "paradas": 1,
+              "kg_max": 12.0,
+              "cap": 30,
+              "sale": "08:48",
+              "regreso": "09:18"
+            }
+          ],
+          "puntaje": 68.3
+        }
+      }
+    }
+  ],
+  "decision": {
+    "estrategia_elegida": "H",
+    "resumen": "Se selecciona la estrategia H (línea base voraz) porque obtiene el mayor puntaje (69.4), el costo más bajo (S/ 371.6) y cumple con todos los criterios de puntualidad y urgentes dentro de los pesos del objetivo. Aunque la capacidad total supera el límite por vuelta, la estrategia sigue siendo factible y el riesgo global es bajo; sin embargo, se requiere autorización para añadir capacidad adicional.",
+    "por_que": [
+      "Mayor puntaje (69.4) frente a A (61.6), C (56.6) y B (31.5).",
+      "Costo más bajo (S/ 371.6) que satisface el peso del 45% en el objetivo.",
+      "Urgentes 6/6 a tiempo, cumpliendo el peso del 15% de urgentes.",
+      "Riesgo bajo según el analista y la tabla de KPIs."
+    ],
+    "criterios_que_pesaron": [
+      {
+        "criterio": "puntaje",
+        "importancia": "alta",
+        "evidencia": "H puntaje 69.4, superior a A 61.6, C 56.6, B 31.5"
+      },
+      {
+        "criterio": "costo",
+        "importancia": "alta",
+        "evidencia": "H costo S/ 371.6, menor que A S/ 407.3, C S/ 453.0, B S/ 410.8"
+      },
+      {
+        "criterio": "urgentes a tiempo",
+        "importancia": "alta",
+        "evidencia": "H 6/6 urgentes a tiempo vs A 4/6, C 4/6, B 5/6"
+      },
+      {
+        "criterio": "riesgo",
+        "importancia": "media",
+        "evidencia": "Analista indica riesgo bajo para H; B tiene riesgo alto"
+      }
+    ],
+    "desviacion_del_ranking": "ninguna",
+    "trade_offs": [
+      "Capacidad total (1312 kg) supera el límite por vuelta (1060 kg), requiriendo segunda vuelta o vehículo extra.",
+      "Carga de F1 cercana al límite (590 kg de 600 kg), sin margen amplio."
+    ],
+    "riesgos": [
+      {
+        "riesgo": "Sobrecarga de capacidad en la primera vuelta (1312 kg > 1060 kg)",
+        "mitigacion": "Programar segunda vuelta para los pedidos restantes o contratar una moto/vehículo adicional antes de iniciar"
+      },
+      {
+        "riesgo": "Limitación de refrigeración (967 kg > 660 kg capacidad con frío)",
+        "mitigacion": "Asignar los pedidos refrigerados a los vehículos con cámara fría y, si falta capacidad, usar unidad de frío externa bajo contrato"
+      },
+      {
+        "riesgo": "Carga de F1 cerca del límite de peso (590 kg/600 kg)",
+        "mitigacion": "Revisar distribución de pedidos y mover carga ligera a M1 o M2 para equilibrar"
+      }
+    ],
+    "revisar_antes_de_aplicar": [
+      "Verificar peso total asignado a cada vehículo (especialmente F1) contra su capacidad máxima.",
+      "Confirmar que los pedidos refrigerados caben en la capacidad de frío disponible.",
+      "Comprobar que no haya pedidos sin asignar (ej. P18) en la planificación actual."
+    ],
+    "confianza": "alta",
+    "escalar_a_humano": true
+  },
+  "elegida": "H",
+  "auditoria": [
+    {
+      "verificación": "La estrategia elegida existe",
+      "resultado": "✅",
+      "detalle": "el Decisor eligió 'H'"
+    },
+    {
+      "verificación": "El Analista aplicó todas las instrucciones (sin tool calls fallidas pendientes)",
+      "resultado": "✅",
+      "detalle": "sí"
+    },
+    {
+      "verificación": "Sin violaciones duras (capacidad, frío, prohibiciones)",
+      "resultado": "✅",
+      "detalle": "ninguna"
+    },
+    {
+      "verificación": "Todos los pedidos asignados",
+      "resultado": "✅",
+      "detalle": "12/19 a tiempo"
+    },
+    {
+      "verificación": "Urgentes dentro de su ventana",
+      "resultado": "✅",
+      "detalle": "6/6"
+    },
+    {
+      "verificación": "Puntualidad mínima aceptable (≥ 70% a tiempo)",
+      "resultado": "❌",
+      "detalle": "63.2% a tiempo → bajo el umbral: el plan no sale sin revisión humana"
+    },
+    {
+      "verificación": "Regreso dentro del turno",
+      "resultado": "⚠️",
+      "detalle": "último regreso 15:38, 128 min fuera de turno"
+    },
+    {
+      "verificación": "Coincide con el #1 numérico o justifica la desviación",
+      "resultado": "✅",
+      "detalle": "#1 numérico: H (69.4); elegida: H (69.4)"
+    },
+    {
+      "verificación": "Robustez evaluada con prueba de estrés",
+      "resultado": "✅",
+      "detalle": "caída 10.6 pts"
+    },
+    {
+      "verificación": "El Evaluador usó el simulador (tool)",
+      "resultado": "✅",
+      "detalle": "sí"
+    },
+    {
+      "verificación": "Las cifras del Decisor existen en el simulador",
+      "resultado": "✅",
+      "detalle": "8/8 cifras verificadas"
+    }
+  ],
+  "escalar_a_humano": true,
+  "consumo_api": [
+    {
+      "hora": "00:01:19",
+      "agente": "analista",
+      "modelo": "qwen/qwen3.8-27b",
+      "key": "key3…Syyo",
+      "tokens_prompt": 2827,
+      "tokens_respuesta": 188,
+      "tokens_total": 3015,
+      "latencia_s": 2.1,
+      "TPM_restantes": 4273,
+      "RPD_restantes": 999,
+      "cache": false
+    },
+    {
+      "hora": "00:01:20",
+      "agente": "analista",
+      "modelo": "qwen/qwen3.8-27b",
+      "key": "key2…FhHH",
+      "tokens_prompt": 3141,
+      "tokens_respuesta": 47,
+      "tokens_total": 3188,
+      "latencia_s": 0.71,
+      "TPM_restantes": 3959,
+      "RPD_restantes": 998,
+      "cache": false
+    },
+    {
+      "hora": "00:01:20",
+      "agente": "analista",
+      "modelo": "qwen/qwen3.8-27b",
+      "key": "key1…iFTc",
+      "tokens_prompt": 3311,
+      "tokens_respuesta": 16,
+      "tokens_total": 3327,
+      "latencia_s": 0.68,
+      "TPM_restantes": 3789,
+      "RPD_restantes": 995,
+      "cache": false
+    },
+    {
+      "hora": "00:01:22",
+      "agente": "analista",
+      "modelo": "qwen/qwen3.8-27b",
+      "key": "key4…U8Hj",
+      "tokens_prompt": 4540,
+      "tokens_respuesta": 355,
+      "tokens_total": 4895,
+      "latencia_s": 1.71,
+      "TPM_restantes": 2560,
+      "RPD_restantes": 994,
+      "cache": false
+    },
+    {
+      "hora": "00:01:30",
+      "agente": "planificador",
+      "modelo": "openai/gpt-oss-120b",
+      "key": "key3…Syyo",
+      "tokens_prompt": 2603,
+      "tokens_respuesta": 3393,
+      "tokens_total": 5996,
+      "latencia_s": 7.84,
+      "TPM_restantes": 5094,
+      "RPD_restantes": 999,
+      "cache": false
+    },
+    {
+      "hora": "00:01:31",
+      "agente": "evaluador",
+      "modelo": "openai/gpt-oss-120b",
+      "key": "key2…FhHH",
+      "tokens_prompt": 1341,
+      "tokens_respuesta": 59,
+      "tokens_total": 1400,
+      "latencia_s": 0.58,
+      "TPM_restantes": 6020,
+      "RPD_restantes": 999,
+      "cache": false
+    },
+    {
+      "hora": "00:01:33",
+      "agente": "evaluador",
+      "modelo": "openai/gpt-oss-120b",
+      "key": "key1…iFTc",
+      "tokens_prompt": 2937,
+      "tokens_respuesta": 757,
+      "tokens_total": 3694,
+      "latencia_s": 2.17,
+      "TPM_restantes": 4524,
+      "RPD_restantes": 999,
+      "cache": false
+    },
+    {
+      "hora": "00:01:39",
+      "agente": "planificador",
+      "modelo": "openai/gpt-oss-120b",
+      "key": "key4…U8Hj",
+      "tokens_prompt": 2827,
+      "tokens_respuesta": 2883,
+      "tokens_total": 5710,
+      "latencia_s": 6.61,
+      "TPM_restantes": 4835,
+      "RPD_restantes": 997,
+      "cache": false
+    },
+    {
+      "hora": "00:01:40",
+      "agente": "evaluador",
+      "modelo": "openai/gpt-oss-120b",
+      "key": "key2…FhHH",
+      "tokens_prompt": 1352,
+      "tokens_respuesta": 59,
+      "tokens_total": 1411,
+      "latencia_s": 0.62,
+      "TPM_restantes": 6589,
+      "RPD_restantes": 998,
+      "cache": false
+    },
+    {
+      "hora": "00:01:42",
+      "agente": "evaluador",
+      "modelo": "openai/gpt-oss-120b",
+      "key": "key2…FhHH",
+      "tokens_prompt": 2920,
+      "tokens_respuesta": 900,
+      "tokens_total": 3820,
+      "latencia_s": 2.38,
+      "TPM_restantes": 3681,
+      "RPD_restantes": 997,
+      "cache": false
+    },
+    {
+      "hora": "00:01:45",
+      "agente": "decisor",
+      "modelo": "openai/gpt-oss-120b",
+      "key": "key3…Syyo",
+      "tokens_prompt": 2528,
+      "tokens_respuesta": 916,
+      "tokens_total": 3444,
+      "latencia_s": 2.52,
+      "TPM_restantes": 1517,
+      "RPD_restantes": 998,
+      "cache": false
+    }
+  ]
+}

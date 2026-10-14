@@ -9,7 +9,7 @@ Sistema multi-agente con **Groq** para planificar el reparto de una distribuidor
 | 1 | Jupyter Notebook funcional | `LasGrills_Hackathon7_RutaBrasa.ipynb` |
 | 2 | Diagrama del flujo de agentes | `entregables/diagrama_flujo.png` (también `.svg` y Mermaid dentro del notebook) |
 | 3 | Capturas / evidencias de ejecución | `evidencias/<fecha>_<corrida>/` (traza.json, resumen.md, gráficos), generadas automáticamente en cada corrida, + `entregables/notebook_ejecutado.html` |
-| 4 | Presentación ejecutiva (máx. 8 slides) | `entregables/Presentacion_LasGrills_Hackathon7.pptx` |
+| 4 | Presentación ejecutiva (máx. 8 slides) | `entregables/Presentacion_LasGrills_Hackathon7.pdf` (y la versión editable `.pptx`) |
 
 `GUIA_DEFENSA.md` es material interno del equipo (guion, preguntas del jurado y checklist de la demo) y no se entrega.
 
